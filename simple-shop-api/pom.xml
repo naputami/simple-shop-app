@@ -54,6 +54,16 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>io.minio</groupId>
+			<artifactId>minio</artifactId>
+			<version>8.5.12</version>
+		</dependency>
+		<dependency>
+			<groupId>cool.graph</groupId>
+			<artifactId>cuid-java</artifactId>
+			<version>0.1.1</version>
+		</dependency>
 	</dependencies>
 
 	<build>
