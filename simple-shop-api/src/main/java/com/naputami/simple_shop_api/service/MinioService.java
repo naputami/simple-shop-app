@@ -12,6 +12,7 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.concurrent.TimeUnit;
 import com.naputami.simple_shop_api.config.MinioConfig;
+import com.naputami.simple_shop_api.dto.request.CustomerFormDTO;
 
 @Service
 public class MinioService {
@@ -21,7 +22,7 @@ public class MinioService {
     @Autowired
     private MinioConfig minioConfig;
 
-    public void uploadFile(String objectName, MultipartFile file)
+    public String uploadFile(CustomerFormDTO request)
             throws IOException, ServerException, InsufficientDataException,
             ErrorResponseException, XmlParserException, InternalException, InvalidKeyException,
             InvalidResponseException, NoSuchAlgorithmException {
@@ -32,15 +33,22 @@ public class MinioService {
             if (!found) {
                 minioClient.makeBucket(MakeBucketArgs.builder().bucket(bucketName).build());
             }
+
+            String customerName = request.getName();
+            String timeStamp = String.valueOf(System.currentTimeMillis());
+
+            String generatedFileName = String.format("%s_%s", customerName, timeStamp);
             // Upload the file to the bucket
-            try (InputStream inputStream = file.getInputStream()) {
+            try (InputStream inputStream = request.getImgFile().getInputStream()) {
                 minioClient.putObject(
                         PutObjectArgs.builder()
                                 .bucket(bucketName)
-                                .object(objectName)
-                                .stream(inputStream, file.getSize(), -1)
-                                .contentType(file.getContentType())
+                                .object(generatedFileName)
+                                .stream(inputStream, request.getImgFile().getSize(), -1)
+                                .contentType(request.getImgFile().getContentType())
                                 .build());
+                
+                return generatedFileName;
             }
         } catch (MinioException e) {
             throw new RuntimeException("Error uploading file to MinIO", e);
