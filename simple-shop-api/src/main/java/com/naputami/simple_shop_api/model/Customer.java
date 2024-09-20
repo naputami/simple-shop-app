@@ -7,7 +7,9 @@ import lombok.Builder;
 import jakarta.persistence.Table;
 import org.hibernate.annotations.GenericGenerator;
 
-import java.sql.Timestamp;
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import java.time.LocalDate;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -45,7 +47,8 @@ public class Customer {
     private Boolean isActive;
 
     @Column(name = "last_order_date")
-    private Timestamp lastOrderDate;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    private LocalDate lastOrderDate;
 
     @Column(name = "pic")
     private String pic;

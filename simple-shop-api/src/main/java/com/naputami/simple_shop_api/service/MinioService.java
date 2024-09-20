@@ -6,13 +6,13 @@ import io.minio.http.Method;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.concurrent.TimeUnit;
 import com.naputami.simple_shop_api.config.MinioConfig;
-import com.naputami.simple_shop_api.dto.request.CustomerFormDTO;
 
 @Service
 public class MinioService {
@@ -22,7 +22,7 @@ public class MinioService {
     @Autowired
     private MinioConfig minioConfig;
 
-    public String uploadFile(CustomerFormDTO request)
+    public String uploadFile(MultipartFile file, String name)
             throws IOException, ServerException, InsufficientDataException,
             ErrorResponseException, XmlParserException, InternalException, InvalidKeyException,
             InvalidResponseException, NoSuchAlgorithmException {
@@ -34,18 +34,17 @@ public class MinioService {
                 minioClient.makeBucket(MakeBucketArgs.builder().bucket(bucketName).build());
             }
 
-            String customerName = request.getName();
             String timeStamp = String.valueOf(System.currentTimeMillis());
 
-            String generatedFileName = String.format("%s_%s", customerName, timeStamp);
+            String generatedFileName = String.format("%s_%s", name, timeStamp);
             // Upload the file to the bucket
-            try (InputStream inputStream = request.getImgFile().getInputStream()) {
+            try (InputStream inputStream = file.getInputStream()) {
                 minioClient.putObject(
                         PutObjectArgs.builder()
                                 .bucket(bucketName)
                                 .object(generatedFileName)
-                                .stream(inputStream, request.getImgFile().getSize(), -1)
-                                .contentType(request.getImgFile().getContentType())
+                                .stream(inputStream, file.getSize(), -1)
+                                .contentType(file.getContentType())
                                 .build());
                 
                 return generatedFileName;

@@ -9,9 +9,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.naputami.simple_shop_api.dto.request.CustomerFormDTO;
-import com.naputami.simple_shop_api.model.Customer;
-import com.naputami.simple_shop_api.service.CustomerService;
+import com.naputami.simple_shop_api.dto.request.ItemFormDTO;
+import com.naputami.simple_shop_api.model.Item;
+import com.naputami.simple_shop_api.service.ItemService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -27,38 +27,44 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.domain.Pageable;
 
 @RestController
-@RequestMapping("/customers")
+@RequestMapping("/items")
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-public class CustomerController {
-    private final CustomerService customerService;
+public class ItemControler {
+    private final ItemService itemService;
 
     @PostMapping
-    public ResponseEntity<?> addNewCustomer(@Valid @ModelAttribute CustomerFormDTO request, BindingResult result) {
+    public ResponseEntity<?> addNewItem(@Valid @ModelAttribute ItemFormDTO request, BindingResult result) {
         if (result.hasErrors()) {
             return ResponseEntity.badRequest().body(result.getAllErrors().stream()
                     .map(error -> error.getDefaultMessage()).collect(Collectors.toList()));
         }
-        return customerService.addNewCustomer(request);
+
+        return itemService.addNewItem(request);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> editCustomer(@PathVariable String id, @Valid @ModelAttribute CustomerFormDTO request,
+    public ResponseEntity<?> editItem(@PathVariable String id, @Valid @ModelAttribute ItemFormDTO request,
             BindingResult result) {
         if (result.hasErrors()) {
             return ResponseEntity.badRequest().body(result.getAllErrors().stream()
                     .map(error -> error.getDefaultMessage()).collect(Collectors.toList()));
         }
 
-        return customerService.editCustomer(request, id);
+        return itemService.editItem(request, id);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteItem(@PathVariable String id) {
+        return itemService.deleteItem(id);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getCustomerDetail(@PathVariable String id) {
-        return customerService.getCustomerDetail(id);
+    public ResponseEntity<?> getDetailItem(@PathVariable String id) {
+        return itemService.getItemDetail(id);
     }
 
     @GetMapping
-    public ResponseEntity<?> getCustomers(@RequestParam(required = false) String name,
+    public ResponseEntity<?> getItems(@RequestParam(required = false) String name,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "name,asc") String[] sort) {
@@ -71,15 +77,12 @@ public class CustomerController {
         Sort sortObj = Sort.by(direction, sort[0]);
         Pageable pageable = PageRequest.of(page, size, sortObj);
 
-        Specification<Customer> spec = (root, query, criteriaBuilder) -> name != null ? criteriaBuilder.like(root.get("name"),
-                "%" + name + "%") : criteriaBuilder.conjunction();
+        Specification<Item> spec = (root, query, criteriaBuilder) -> name != null
+                ? criteriaBuilder.like(root.get("name"),
+                        "%" + name + "%")
+                : criteriaBuilder.conjunction();
 
-        return customerService.getAllCustomers(spec, pageable);
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteCustomer(@PathVariable String id) {
-        return customerService.deleteCustomer(id);
+        return itemService.getAllItems(spec, pageable);
     }
 
 }

@@ -9,54 +9,60 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import com.naputami.simple_shop_api.dto.request.CustomerFormDTO;
-import com.naputami.simple_shop_api.dto.response.CustomerDetailDTO;
-import com.naputami.simple_shop_api.dto.response.CustomerListItemDTO;
+import com.naputami.simple_shop_api.dto.request.ItemFormDTO;
+import com.naputami.simple_shop_api.dto.response.ItemDetailDTO;
+import com.naputami.simple_shop_api.dto.response.ItemListItemDTO;
 import com.naputami.simple_shop_api.dto.response.PaginatedResponseDTO;
 import com.naputami.simple_shop_api.dto.response.StandardResponseDTO;
-import com.naputami.simple_shop_api.model.Customer;
-import com.naputami.simple_shop_api.repository.CustomerRepository;
+import com.naputami.simple_shop_api.model.Item;
+import com.naputami.simple_shop_api.repository.ItemRespository;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 import java.util.Optional;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.ArrayList;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-public class CustomerService {
-    private final CustomerRepository customerRepository;
+public class ItemService {
     private final MinioService minioService;
     private final CodeGeneratorService codeGeneratorService;
     private final MessageSource messageSource;
+    private final ItemRespository itemRespository;
 
     @Transactional
-    public ResponseEntity<StandardResponseDTO> addNewCustomer(CustomerFormDTO request) {
+    public ResponseEntity<StandardResponseDTO> addNewItem(ItemFormDTO request){
         StandardResponseDTO result = new StandardResponseDTO();
         HttpStatus status = HttpStatus.OK;
-        String message = messageSource.getMessage("api.success.add", new Object[]{"customer"}, null);
+        String message = messageSource.getMessage("api.success.add", new Object[]{"item"}, null);
         String savedFileName = null;
+        Boolean isAvailable = true;
 
-        try {
+         try {
 
             if(request.getImgFile() != null){
                 savedFileName = minioService.uploadFile(request.getImgFile(), request.getName());
             }
 
-            Customer newCustomer = Customer.builder()
-                                          .name(request.getName())
-                                          .address(request.getAddress())
-                                          .phone(request.getPhoneNumber())
-                                          .code(codeGeneratorService.generateCustomerCode())
-                                          .isActive(true)
-                                          .pic(savedFileName)
-                                          .build();
+            if(request.getStock() == 0){
+                isAvailable = false;
+            }
 
-            customerRepository.save(newCustomer);
+            Item newItem = Item.builder()
+                                .name(request.getName())
+                                .code(codeGeneratorService.generateItemCode())
+                                .price(request.getPrice())
+                                .stock(request.getStock())
+                                .pic(savedFileName)
+                                .desc(request.getDesc())
+                                .lastRestock(request.getLastRestockDate())
+                                .isAvailable(isAvailable)
+                                .build();
+            
+            itemRespository.save(newItem);
             
             result.setCode(status.value());
             result.setMessage(message);
@@ -76,23 +82,21 @@ public class CustomerService {
 
         }
 
-
-
     }
 
     @Transactional
-    public ResponseEntity<StandardResponseDTO> editCustomer(CustomerFormDTO request, String id) {
+    public ResponseEntity<StandardResponseDTO> editItem(ItemFormDTO request, String id) {
         StandardResponseDTO result = new StandardResponseDTO();
         HttpStatus status = HttpStatus.OK;
-        String message = messageSource.getMessage("api.success.edit", new Object[]{"customer", id}, null);
-
+        String message = messageSource.getMessage("api.success.edit", new Object[]{"item", id}, null);
+        
         try {
 
-            Optional<Customer> foundCustomer = customerRepository.findById(id);
+            Optional<Item> foundItem = itemRespository.findById(id);
 
-            if(foundCustomer.isEmpty()){
+            if(foundItem.isEmpty()){
                 status = HttpStatus.NOT_FOUND;
-                message = messageSource.getMessage("api.error.not-found", new Object[]{"customer", id}, null);
+                message = messageSource.getMessage("api.error.not-found", new Object[]{"item", id}, null);
                 result.setCode(status.value());
                 result.setStatus(status.name());
                 result.setMessage(message);
@@ -101,23 +105,30 @@ public class CustomerService {
                 
             }
 
-            Customer editedCustomer = foundCustomer.get();
+            Item editedItem = foundItem.get();
 
-            String imageFileName = editedCustomer.getPic();
+            String imageFileName = editedItem.getPic();
+            Boolean isAvailable = editedItem.getIsAvailable();
 
             if(request.getImgFile() != null){
                 minioService.deleteFile(imageFileName);
                 imageFileName = minioService.uploadFile(request.getImgFile(), request.getName());
             }
 
-            editedCustomer.setName(request.getName());
-            editedCustomer.setAddress(request.getAddress());
-            editedCustomer.setPhone(request.getPhoneNumber());
-            editedCustomer.setIsActive(request.getIsActive());
-            editedCustomer.setPic(imageFileName);
+            if(request.getStock() != editedItem.getStock() && request.getStock() == 0){
+                isAvailable = false;
+            }
 
+            editedItem.setName(request.getName());
+            editedItem.setPrice(request.getPrice());
+            editedItem.setStock(request.getStock());
+            editedItem.setDesc(request.getDesc());
+            editedItem.setLastRestock(request.getLastRestockDate());
+            editedItem.setIsAvailable(isAvailable);
+            editedItem.setPic(imageFileName);
 
-            customerRepository.save(editedCustomer);
+            itemRespository.save(editedItem);
+            
             
             result.setCode(status.value());
             result.setMessage(message);
@@ -137,81 +148,23 @@ public class CustomerService {
 
         }
 
-
-
     }
 
-    public ResponseEntity<StandardResponseDTO> getCustomerDetail(String id){
-        StandardResponseDTO result = new StandardResponseDTO();
-        HttpStatus status = HttpStatus.OK;
-        String message = messageSource.getMessage("api.success.load", new Object[]{"customer"}, null);
-        String imageUrl = null;
-
-        try {
-
-            Optional<Customer> foundCustomer = customerRepository.findById(id);
-
-            if(foundCustomer.isEmpty()){
-                status = HttpStatus.NOT_FOUND;
-                message = messageSource.getMessage("api.error.not-found", new Object[]{"customer", id}, null);
-                result.setCode(status.value());
-                result.setStatus(status.name());
-                result.setMessage(message);
-    
-                return ResponseEntity.status(status.value()).body(result);
-                
-            }
-
-            Customer choosenCustomer = foundCustomer.get();
-            if(choosenCustomer.getPic() != null){
-                imageUrl = minioService.getFilePublicUrl(choosenCustomer.getPic());
-            }
-            CustomerDetailDTO customerData = CustomerDetailDTO.builder()
-                                                               .name(choosenCustomer.getName())
-                                                               .address(choosenCustomer.getAddress())
-                                                               .custCode(choosenCustomer.getCode())
-                                                               .phoneNumber(choosenCustomer.getPhone())
-                                                               .isActive(choosenCustomer.getIsActive())
-                                                               .lastOrderDate(choosenCustomer.getLastOrderDate())
-                                                               .imgUrl(imageUrl)
-                                                               .build();
-
-           
-            
-            result.setCode(status.value());
-            result.setMessage(message);
-            result.setStatus(status.name());
-            result.setData(customerData);
-            return ResponseEntity.ok().body(result);
-
-        } catch (Exception e) {
-            log.info("Error: " + e.getMessage());
-            status = HttpStatus.INTERNAL_SERVER_ERROR;
-            message= messageSource.getMessage("api.error.server", null, null);
-
-            result.setCode(status.value());
-            result.setStatus(status.name());
-            result.setMessage(message);
-
-            return ResponseEntity.internalServerError().body(result);
-
-        }
-    }
 
     @Transactional
-    public ResponseEntity<StandardResponseDTO> deleteCustomer(String id){
+    public ResponseEntity<StandardResponseDTO> deleteItem(String id){
         StandardResponseDTO result = new StandardResponseDTO();
         HttpStatus status = HttpStatus.OK;
-        String message = messageSource.getMessage("api.success.delete", new Object[]{"customer", id}, null);
+        String message = messageSource.getMessage("api.success.delete", new Object[]{"item", id}, null);
 
 
         try {
 
-            Optional<Customer> foundCustomer = customerRepository.findById(id);
+            Optional<Item> foundItem = itemRespository.findById(id);
 
-            if(foundCustomer.isEmpty()){
+            if(foundItem.isEmpty()){
                 status = HttpStatus.NOT_FOUND;
-                message = messageSource.getMessage("api.error.not-found", new Object[]{"customer", id}, null);
+                message = messageSource.getMessage("api.error.not-found", new Object[]{"item", id}, null);
                 result.setCode(status.value());
                 result.setStatus(status.name());
                 result.setMessage(message);
@@ -220,12 +173,12 @@ public class CustomerService {
                 
             }
 
-            Customer choosenCustomer = foundCustomer.get();
-            if(choosenCustomer.getPic() != null){
-                minioService.deleteFile(choosenCustomer.getPic());
+            Item choosenItem = foundItem.get();
+            if(choosenItem.getPic() != null){
+                minioService.deleteFile(choosenItem.getPic());
             }
 
-            customerRepository.delete(choosenCustomer);
+            itemRespository.delete(choosenItem);
           
             result.setCode(status.value());
             result.setMessage(message);
@@ -246,46 +199,101 @@ public class CustomerService {
         }
     }
 
-    public ResponseEntity<PaginatedResponseDTO> getAllCustomers(Specification<Customer> spec, Pageable page){
-        PaginatedResponseDTO result = new PaginatedResponseDTO();
+
+    public ResponseEntity<StandardResponseDTO> getItemDetail(String id){
+        StandardResponseDTO result = new StandardResponseDTO();
         HttpStatus status = HttpStatus.OK;
-        String message = messageSource.getMessage("api.success.load", new Object[]{"customer"}, null);
+        String message = messageSource.getMessage("api.success.load", new Object[]{"item"}, null);
+        String imageUrl = null;
 
         try {
 
-        Page<Customer> customerPage = customerRepository.findAll(spec, page);
+            Optional<Item> foundItem = itemRespository.findById(id);
 
-        List<Customer> customerPageContent = customerPage.getContent();
-
-        List<CustomerListItemDTO> customers = new ArrayList<>();
-
-        for (Customer item : customerPageContent) {
-            String imageUrl = null;
-
-            if(item.getPic() != null){
-                imageUrl = minioService.getFilePublicUrl(item.getPic());
+            if(foundItem.isEmpty()){
+                status = HttpStatus.NOT_FOUND;
+                message = messageSource.getMessage("api.error.not-found", new Object[]{"item", id}, null);
+                result.setCode(status.value());
+                result.setStatus(status.name());
+                result.setMessage(message);
+    
+                return ResponseEntity.status(status.value()).body(result);
+                
             }
 
-            CustomerListItemDTO itemResult = CustomerListItemDTO.builder()
-                                                                .id(item.getId())
-                                                                .name(item.getName())
-                                                                .custCode(item.getCode())
-                                                                .imgUrl(imageUrl)
-                                                                .isActive(item.getIsActive())
-                                                                .lastOrderDate(item.getLastOrderDate())
-                                                                .build();
-            customers.add(itemResult);
+            Item choosenItem = foundItem.get();
+            if(choosenItem.getPic() != null){
+                imageUrl = minioService.getFilePublicUrl(choosenItem.getPic());
+            }
+
+            ItemDetailDTO itemData = ItemDetailDTO.builder()
+                                                  .name(choosenItem.getName())
+                                                  .itemCode(choosenItem.getCode())
+                                                  .price(choosenItem.getPrice())
+                                                  .stock(choosenItem.getStock())
+                                                  .desc(choosenItem.getDesc())
+                                                  .lastRestockDate(choosenItem.getLastRestock())
+                                                  .isAvailable(choosenItem.getIsAvailable())
+                                                  .imgUrl(imageUrl)
+                                                  .build();
+           
+            
+            result.setCode(status.value());
+            result.setMessage(message);
+            result.setStatus(status.name());
+            result.setData(itemData);
+            return ResponseEntity.ok().body(result);
+
+        } catch (Exception e) {
+            log.info("Error: " + e.getMessage());
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
+            message= messageSource.getMessage("api.error.server", null, null);
+
+            result.setCode(status.value());
+            result.setStatus(status.name());
+            result.setMessage(message);
+
+            return ResponseEntity.internalServerError().body(result);
+
+        }
+    }
+
+     public ResponseEntity<PaginatedResponseDTO> getAllItems(Specification<Item> spec, Pageable page){
+        PaginatedResponseDTO result = new PaginatedResponseDTO();
+        HttpStatus status = HttpStatus.OK;
+        String message = messageSource.getMessage("api.success.load", new Object[]{"item"}, null);
+
+        try {
+
+        Page<Item> itemPage = itemRespository.findAll(spec, page);
+
+        List<Item> itemPageContent = itemPage.getContent();
+
+        List<ItemListItemDTO> items = new ArrayList<>();
+
+        for (Item item : itemPageContent) {
+
+            ItemListItemDTO itemResult = ItemListItemDTO.builder()
+                                                        .id(item.getId())
+                                                        .name(item.getName())
+                                                        .code(item.getCode())
+                                                        .price(item.getPrice())
+                                                        .stock(item.getStock())
+                                                        .isAvailable(item.getIsAvailable())
+                                                        .lastRestockDate(item.getLastRestock())
+                                                        .build();
+            items.add(itemResult);
 
         }
 
         result.setCode(status.value());
         result.setMessage(message);
         result.setStatus(status.name());
-        result.setData(customers);
-        result.setPageNo(customerPage.getNumber() + 1);
-        result.setPageSize(customerPage.getSize());
-        result.setTotalPages(customerPage.getTotalPages());
-        result.setTotalElements(customerPage.getTotalElements());
+        result.setData(items);
+        result.setPageNo(itemPage.getNumber() + 1);
+        result.setPageSize(itemPage.getSize());
+        result.setTotalPages(itemPage.getTotalPages());
+        result.setTotalElements(itemPage.getTotalElements());
 
         return ResponseEntity.ok().body(result);
 
@@ -302,11 +310,5 @@ public class CustomerService {
             return ResponseEntity.internalServerError().body(result);
         }
 
-        
-
-
-
-
     }
-
 }

@@ -3,21 +3,20 @@ package com.naputami.simple_shop_api.dto.response;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDate;
-
 import lombok.AllArgsConstructor;
+import java.time.LocalDate;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CustomerDetailDTO {
+public class ItemDetailDTO {
     private String name;
-    private String address;
-    private String phoneNumber;
+    private Double price;
+    private Integer stock;
     private String imgUrl;
-    private String custCode;
-    private LocalDate lastOrderDate;
-    private boolean isActive;
+    private LocalDate lastRestockDate;
+    private Boolean isAvailable;
+    private String itemCode;
+    private String desc;
 }
