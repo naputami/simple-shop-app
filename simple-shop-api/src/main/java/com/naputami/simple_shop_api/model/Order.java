@@ -44,7 +44,7 @@ public class Order {
 
     @Column(name = "order_date")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    private LocalDate order_date;
+    private LocalDate orderDate;
 
     @ManyToOne
     @JoinColumn(name = "customer_id")
