@@ -55,7 +55,7 @@ public class OrderService {
                 status = HttpStatus.NOT_FOUND;
                 message = "Item atau customer tidak dapat ditemukan!";
                 result.setCode(status.value());
-                result.setStatus(status.name());
+                result.setStatus(status.getReasonPhrase());
                 result.setMessage(message);
 
                 return ResponseEntity.status(status.value()).body(result);
@@ -68,7 +68,7 @@ public class OrderService {
                 status = HttpStatus.BAD_REQUEST;
                 message = "Quantitas yang dipesan melebihi stock yang tersedia";
                 result.setCode(status.value());
-                result.setStatus(status.name());
+                result.setStatus(status.getReasonPhrase());
                 result.setMessage(message);
 
                 return ResponseEntity.status(status.value()).body(result);
@@ -112,7 +112,7 @@ public class OrderService {
 
             result.setCode(status.value());
             result.setMessage(message);
-            result.setStatus(status.name());
+            result.setStatus(status.getReasonPhrase());
             return ResponseEntity.ok().body(result);
 
         } catch (Exception e) {
@@ -121,7 +121,7 @@ public class OrderService {
             message = messageSource.getMessage("api.error.server", null, null);
 
             result.setCode(status.value());
-            result.setStatus(status.name());
+            result.setStatus(status.getReasonPhrase());
             result.setMessage(message);
 
             return ResponseEntity.internalServerError().body(result);
@@ -140,7 +140,7 @@ public class OrderService {
                 status = HttpStatus.BAD_REQUEST;
                 message = messageSource.getMessage("api.error.not-found", new Object[] { "order", id }, null);
                 result.setCode(status.value());
-                result.setStatus(status.name());
+                result.setStatus(status.getReasonPhrase());
                 result.setMessage(message);
 
                 return ResponseEntity.status(status.value()).body(result);
@@ -153,7 +153,7 @@ public class OrderService {
                 status = HttpStatus.NOT_FOUND;
                 message = "Item atau customer tidak dapat ditemukan!";
                 result.setCode(status.value());
-                result.setStatus(status.name());
+                result.setStatus(status.getReasonPhrase());
                 result.setMessage(message);
 
                 return ResponseEntity.status(status.value()).body(result);
@@ -168,7 +168,7 @@ public class OrderService {
                 status = HttpStatus.BAD_REQUEST;
                 message = "Quantitas yang dipesan melebihi stock yang tersedia";
                 result.setCode(status.value());
-                result.setStatus(status.name());
+                result.setStatus(status.getReasonPhrase());
                 result.setMessage(message);
 
                 return ResponseEntity.status(status.value()).body(result);
@@ -204,7 +204,7 @@ public class OrderService {
 
             result.setCode(status.value());
             result.setMessage(message);
-            result.setStatus(status.name());
+            result.setStatus(status.getReasonPhrase());
             return ResponseEntity.ok().body(result);
 
         } catch (Exception e) {
@@ -213,7 +213,7 @@ public class OrderService {
             message = messageSource.getMessage("api.error.server", null, null);
 
             result.setCode(status.value());
-            result.setStatus(status.name());
+            result.setStatus(status.getReasonPhrase());
             result.setMessage(message);
 
             return ResponseEntity.internalServerError().body(result);
@@ -233,7 +233,7 @@ public class OrderService {
                 status = HttpStatus.BAD_REQUEST;
                 message = messageSource.getMessage("api.error.not-found", new Object[] { "order", id }, null);
                 result.setCode(status.value());
-                result.setStatus(status.name());
+                result.setStatus(status.getReasonPhrase());
                 result.setMessage(message);
 
                 return ResponseEntity.status(status.value()).body(result);
@@ -242,7 +242,7 @@ public class OrderService {
             orderRepository.delete(foundOrder.get());
             result.setCode(status.value());
             result.setMessage(message);
-            result.setStatus(status.name());
+            result.setStatus(status.getReasonPhrase());
             return ResponseEntity.ok().body(result);
 
         } catch (Exception e) {
@@ -251,7 +251,7 @@ public class OrderService {
             message = messageSource.getMessage("api.error.server", null, null);
 
             result.setCode(status.value());
-            result.setStatus(status.name());
+            result.setStatus(status.getReasonPhrase());
             result.setMessage(message);
 
             return ResponseEntity.internalServerError().body(result);
@@ -271,7 +271,7 @@ public class OrderService {
                 status = HttpStatus.BAD_REQUEST;
                 message = messageSource.getMessage("api.error.not-found", new Object[] { "order", id }, null);
                 result.setCode(status.value());
-                result.setStatus(status.name());
+                result.setStatus(status.getReasonPhrase());
                 result.setMessage(message);
 
                 return ResponseEntity.status(status.value()).body(result);
@@ -290,7 +290,7 @@ public class OrderService {
             result.setData(data);
             result.setCode(status.value());
             result.setMessage(message);
-            result.setStatus(status.name());
+            result.setStatus(status.getReasonPhrase());
 
             return ResponseEntity.ok().body(result);
 
@@ -300,7 +300,7 @@ public class OrderService {
             message = messageSource.getMessage("api.error.server", null, null);
 
             result.setCode(status.value());
-            result.setStatus(status.name());
+            result.setStatus(status.getReasonPhrase());
             result.setMessage(message);
 
             return ResponseEntity.internalServerError().body(result);
@@ -324,7 +324,7 @@ public class OrderService {
 
             result.setCode(status.value());
             result.setMessage(message);
-            result.setStatus(status.name());
+            result.setStatus(status.getReasonPhrase());
             result.setData(data);
             result.setPageNo(orderPage.getNumber() + 1);
             result.setPageSize(orderPage.getSize());
@@ -339,7 +339,7 @@ public class OrderService {
             message = messageSource.getMessage("api.error.server", null, null);
 
             result.setCode(status.value());
-            result.setStatus(status.name());
+            result.setStatus(status.getReasonPhrase());
             result.setMessage(message);
 
             return ResponseEntity.internalServerError().body(result);

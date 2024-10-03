@@ -47,7 +47,7 @@ public class OptionService {
 
             result.setCode(status.value());
             result.setMessage(message);
-            result.setStatus(status.name());
+            result.setStatus(status.getReasonPhrase());
             result.setData(data);
             return ResponseEntity.ok().body(result);
 
@@ -58,7 +58,7 @@ public class OptionService {
             message= messageSource.getMessage("api.error.server", null, null);
 
             result.setCode(status.value());
-            result.setStatus(status.name());
+            result.setStatus(status.getReasonPhrase());
             result.setMessage(message);
 
             return ResponseEntity.internalServerError().body(result);
@@ -86,7 +86,7 @@ public class OptionService {
 
             result.setCode(status.value());
             result.setMessage(message);
-            result.setStatus(status.name());
+            result.setStatus(status.getReasonPhrase());
             result.setData(data);
             return ResponseEntity.ok().body(result);
 
@@ -97,7 +97,7 @@ public class OptionService {
             message= messageSource.getMessage("api.error.server", null, null);
 
             result.setCode(status.value());
-            result.setStatus(status.name());
+            result.setStatus(status.getReasonPhrase());
             result.setMessage(message);
 
             return ResponseEntity.internalServerError().body(result);

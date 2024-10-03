@@ -66,7 +66,7 @@ public class ItemService {
             
             result.setCode(status.value());
             result.setMessage(message);
-            result.setStatus(status.name());
+            result.setStatus(status.getReasonPhrase());
             return ResponseEntity.ok().body(result);
 
         } catch (Exception e) {
@@ -75,7 +75,7 @@ public class ItemService {
             message= messageSource.getMessage("api.error.server", null, null);
 
             result.setCode(status.value());
-            result.setStatus(status.name());
+            result.setStatus(status.getReasonPhrase());
             result.setMessage(message);
 
             return ResponseEntity.internalServerError().body(result);
@@ -98,7 +98,7 @@ public class ItemService {
                 status = HttpStatus.NOT_FOUND;
                 message = messageSource.getMessage("api.error.not-found", new Object[]{"item", id}, null);
                 result.setCode(status.value());
-                result.setStatus(status.name());
+                result.setStatus(status.getReasonPhrase());
                 result.setMessage(message);
     
                 return ResponseEntity.status(status.value()).body(result);
@@ -132,7 +132,7 @@ public class ItemService {
             
             result.setCode(status.value());
             result.setMessage(message);
-            result.setStatus(status.name());
+            result.setStatus(status.getReasonPhrase());
             return ResponseEntity.ok().body(result);
 
         } catch (Exception e) {
@@ -141,7 +141,7 @@ public class ItemService {
             message= messageSource.getMessage("api.error.server", null, null);
 
             result.setCode(status.value());
-            result.setStatus(status.name());
+            result.setStatus(status.getReasonPhrase());
             result.setMessage(message);
 
             return ResponseEntity.internalServerError().body(result);
@@ -166,7 +166,7 @@ public class ItemService {
                 status = HttpStatus.NOT_FOUND;
                 message = messageSource.getMessage("api.error.not-found", new Object[]{"item", id}, null);
                 result.setCode(status.value());
-                result.setStatus(status.name());
+                result.setStatus(status.getReasonPhrase());
                 result.setMessage(message);
     
                 return ResponseEntity.status(status.value()).body(result);
@@ -182,7 +182,7 @@ public class ItemService {
           
             result.setCode(status.value());
             result.setMessage(message);
-            result.setStatus(status.name());
+            result.setStatus(status.getReasonPhrase());
             return ResponseEntity.ok().body(result);
 
         } catch (Exception e) {
@@ -191,7 +191,7 @@ public class ItemService {
             message= messageSource.getMessage("api.error.server", null, null);
 
             result.setCode(status.value());
-            result.setStatus(status.name());
+            result.setStatus(status.getReasonPhrase());
             result.setMessage(message);
 
             return ResponseEntity.internalServerError().body(result);
@@ -214,7 +214,7 @@ public class ItemService {
                 status = HttpStatus.NOT_FOUND;
                 message = messageSource.getMessage("api.error.not-found", new Object[]{"item", id}, null);
                 result.setCode(status.value());
-                result.setStatus(status.name());
+                result.setStatus(status.getReasonPhrase());
                 result.setMessage(message);
     
                 return ResponseEntity.status(status.value()).body(result);
@@ -240,7 +240,7 @@ public class ItemService {
             
             result.setCode(status.value());
             result.setMessage(message);
-            result.setStatus(status.name());
+            result.setStatus(status.getReasonPhrase());
             result.setData(itemData);
             return ResponseEntity.ok().body(result);
 
@@ -250,7 +250,7 @@ public class ItemService {
             message= messageSource.getMessage("api.error.server", null, null);
 
             result.setCode(status.value());
-            result.setStatus(status.name());
+            result.setStatus(status.getReasonPhrase());
             result.setMessage(message);
 
             return ResponseEntity.internalServerError().body(result);
@@ -288,7 +288,7 @@ public class ItemService {
 
         result.setCode(status.value());
         result.setMessage(message);
-        result.setStatus(status.name());
+        result.setStatus(status.getReasonPhrase());
         result.setData(items);
         result.setPageNo(itemPage.getNumber() + 1);
         result.setPageSize(itemPage.getSize());
@@ -304,7 +304,7 @@ public class ItemService {
             message= messageSource.getMessage("api.error.server", null, null);
 
             result.setCode(status.value());
-            result.setStatus(status.name());
+            result.setStatus(status.getReasonPhrase());
             result.setMessage(message);
 
             return ResponseEntity.internalServerError().body(result);

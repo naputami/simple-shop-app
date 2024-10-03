@@ -60,7 +60,7 @@ public class CustomerService {
             
             result.setCode(status.value());
             result.setMessage(message);
-            result.setStatus(status.name());
+            result.setStatus(status.getReasonPhrase());
             return ResponseEntity.ok().body(result);
 
         } catch (Exception e) {
@@ -69,7 +69,7 @@ public class CustomerService {
             message= messageSource.getMessage("api.error.server", null, null);
 
             result.setCode(status.value());
-            result.setStatus(status.name());
+            result.setStatus(status.getReasonPhrase());
             result.setMessage(message);
 
             return ResponseEntity.internalServerError().body(result);
@@ -94,7 +94,7 @@ public class CustomerService {
                 status = HttpStatus.NOT_FOUND;
                 message = messageSource.getMessage("api.error.not-found", new Object[]{"customer", id}, null);
                 result.setCode(status.value());
-                result.setStatus(status.name());
+                result.setStatus(status.getReasonPhrase());
                 result.setMessage(message);
     
                 return ResponseEntity.status(status.value()).body(result);
@@ -121,7 +121,7 @@ public class CustomerService {
             
             result.setCode(status.value());
             result.setMessage(message);
-            result.setStatus(status.name());
+            result.setStatus(status.getReasonPhrase());
             return ResponseEntity.ok().body(result);
 
         } catch (Exception e) {
@@ -130,7 +130,7 @@ public class CustomerService {
             message= messageSource.getMessage("api.error.server", null, null);
 
             result.setCode(status.value());
-            result.setStatus(status.name());
+            result.setStatus(status.getReasonPhrase());
             result.setMessage(message);
 
             return ResponseEntity.internalServerError().body(result);
@@ -155,7 +155,7 @@ public class CustomerService {
                 status = HttpStatus.NOT_FOUND;
                 message = messageSource.getMessage("api.error.not-found", new Object[]{"customer", id}, null);
                 result.setCode(status.value());
-                result.setStatus(status.name());
+                result.setStatus(status.getReasonPhrase());
                 result.setMessage(message);
     
                 return ResponseEntity.status(status.value()).body(result);
@@ -180,7 +180,7 @@ public class CustomerService {
             
             result.setCode(status.value());
             result.setMessage(message);
-            result.setStatus(status.name());
+            result.setStatus(status.getReasonPhrase());
             result.setData(customerData);
             return ResponseEntity.ok().body(result);
 
@@ -190,7 +190,7 @@ public class CustomerService {
             message= messageSource.getMessage("api.error.server", null, null);
 
             result.setCode(status.value());
-            result.setStatus(status.name());
+            result.setStatus(status.getReasonPhrase());
             result.setMessage(message);
 
             return ResponseEntity.internalServerError().body(result);
@@ -213,7 +213,7 @@ public class CustomerService {
                 status = HttpStatus.NOT_FOUND;
                 message = messageSource.getMessage("api.error.not-found", new Object[]{"customer", id}, null);
                 result.setCode(status.value());
-                result.setStatus(status.name());
+                result.setStatus(status.getReasonPhrase());
                 result.setMessage(message);
     
                 return ResponseEntity.status(status.value()).body(result);
@@ -229,7 +229,7 @@ public class CustomerService {
           
             result.setCode(status.value());
             result.setMessage(message);
-            result.setStatus(status.name());
+            result.setStatus(status.getReasonPhrase());
             return ResponseEntity.ok().body(result);
 
         } catch (Exception e) {
@@ -238,7 +238,7 @@ public class CustomerService {
             message= messageSource.getMessage("api.error.server", null, null);
 
             result.setCode(status.value());
-            result.setStatus(status.name());
+            result.setStatus(status.getReasonPhrase());
             result.setMessage(message);
 
             return ResponseEntity.internalServerError().body(result);
@@ -280,7 +280,7 @@ public class CustomerService {
 
         result.setCode(status.value());
         result.setMessage(message);
-        result.setStatus(status.name());
+        result.setStatus(status.getReasonPhrase());
         result.setData(customers);
         result.setPageNo(customerPage.getNumber() + 1);
         result.setPageSize(customerPage.getSize());
@@ -296,7 +296,7 @@ public class CustomerService {
             message= messageSource.getMessage("api.error.server", null, null);
 
             result.setCode(status.value());
-            result.setStatus(status.name());
+            result.setStatus(status.getReasonPhrase());
             result.setMessage(message);
 
             return ResponseEntity.internalServerError().body(result);
