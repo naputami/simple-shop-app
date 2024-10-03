@@ -3,13 +3,16 @@ package com.naputami.simple_shop_api.controller;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.naputami.simple_shop_api.dto.request.OrderFormDTO;
+import com.naputami.simple_shop_api.dto.response.StandardResponseDTO;
 import com.naputami.simple_shop_api.model.Order;
 import com.naputami.simple_shop_api.service.OrderService;
 
@@ -31,14 +34,22 @@ import org.springframework.data.domain.Pageable;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class OrderController {
     private final OrderService orderService;
+    private final MessageSource messageSource;
 
     @PostMapping
     public ResponseEntity<?> addNewOrder(@Valid @ModelAttribute OrderFormDTO request, BindingResult result) {
         if (result.hasErrors()) {
-            return ResponseEntity.badRequest().body(result.getAllErrors().stream()
-                    .map(error -> error.getDefaultMessage()).collect(Collectors.toList()));
-        }
+            HttpStatus status = HttpStatus.BAD_REQUEST;
+            StandardResponseDTO res = StandardResponseDTO.builder()
+                    .code(status.value())
+                    .status(status.getReasonPhrase())
+                    .message(messageSource.getMessage("api.error.validation", null, null))
+                    .data(result.getAllErrors().stream()
+                            .map(error -> error.getDefaultMessage()).collect(Collectors.toList()))
+                    .build();
 
+            return ResponseEntity.badRequest().body(res);
+        }
         return orderService.addNewOrder(request);
     }
 
@@ -46,8 +57,16 @@ public class OrderController {
     public ResponseEntity<?> editOrder(@PathVariable String id, @Valid @ModelAttribute OrderFormDTO request,
             BindingResult result) {
         if (result.hasErrors()) {
-            return ResponseEntity.badRequest().body(result.getAllErrors().stream()
-                    .map(error -> error.getDefaultMessage()).collect(Collectors.toList()));
+            HttpStatus status = HttpStatus.BAD_REQUEST;
+            StandardResponseDTO res = StandardResponseDTO.builder()
+                    .code(status.value())
+                    .status(status.getReasonPhrase())
+                    .message(messageSource.getMessage("api.error.validation", null, null))
+                    .data(result.getAllErrors().stream()
+                            .map(error -> error.getDefaultMessage()).collect(Collectors.toList()))
+                    .build();
+
+            return ResponseEntity.badRequest().body(res);
         }
 
         return orderService.editOrder(request, id);
@@ -69,7 +88,7 @@ public class OrderController {
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "orderDate,desc") String[] sort) {
 
-          Sort.Direction direction = Sort.Direction.ASC;
+        Sort.Direction direction = Sort.Direction.ASC;
         if (sort[1].equals("desc")) {
             direction = Sort.Direction.DESC;
         }
@@ -81,7 +100,7 @@ public class OrderController {
                 ? criteriaBuilder.like(root.get("code"),
                         "%" + code + "%")
                 : criteriaBuilder.conjunction();
-        
+
         return orderService.getAllOrders(spec, pageable);
 
     }

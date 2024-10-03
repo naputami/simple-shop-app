@@ -3,13 +3,16 @@ package com.naputami.simple_shop_api.controller;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.naputami.simple_shop_api.dto.request.CustomerFormDTO;
+import com.naputami.simple_shop_api.dto.response.StandardResponseDTO;
 import com.naputami.simple_shop_api.model.Customer;
 import com.naputami.simple_shop_api.service.CustomerService;
 
@@ -31,12 +34,21 @@ import org.springframework.data.domain.Pageable;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class CustomerController {
     private final CustomerService customerService;
+    private final MessageSource messageSource;
 
     @PostMapping
     public ResponseEntity<?> addNewCustomer(@Valid @ModelAttribute CustomerFormDTO request, BindingResult result) {
         if (result.hasErrors()) {
-            return ResponseEntity.badRequest().body(result.getAllErrors().stream()
-                    .map(error -> error.getDefaultMessage()).collect(Collectors.toList()));
+            HttpStatus status = HttpStatus.BAD_REQUEST;
+            StandardResponseDTO res = StandardResponseDTO.builder()
+                    .code(status.value())
+                    .status(status.getReasonPhrase())
+                    .message(messageSource.getMessage("api.error.validation", null, null))
+                    .data(result.getAllErrors().stream()
+                            .map(error -> error.getDefaultMessage()).collect(Collectors.toList()))
+                    .build();
+
+            return ResponseEntity.badRequest().body(res);
         }
         return customerService.addNewCustomer(request);
     }
@@ -45,8 +57,16 @@ public class CustomerController {
     public ResponseEntity<?> editCustomer(@PathVariable String id, @Valid @ModelAttribute CustomerFormDTO request,
             BindingResult result) {
         if (result.hasErrors()) {
-            return ResponseEntity.badRequest().body(result.getAllErrors().stream()
-                    .map(error -> error.getDefaultMessage()).collect(Collectors.toList()));
+            HttpStatus status = HttpStatus.BAD_REQUEST;
+            StandardResponseDTO res = StandardResponseDTO.builder()
+                    .code(status.value())
+                    .status(status.getReasonPhrase())
+                    .message(messageSource.getMessage("api.error.validation", null, null))
+                    .data(result.getAllErrors().stream()
+                            .map(error -> error.getDefaultMessage()).collect(Collectors.toList()))
+                    .build();
+
+            return ResponseEntity.badRequest().body(res);
         }
 
         return customerService.editCustomer(request, id);
@@ -71,8 +91,10 @@ public class CustomerController {
         Sort sortObj = Sort.by(direction, sort[0]);
         Pageable pageable = PageRequest.of(page, size, sortObj);
 
-        Specification<Customer> spec = (root, query, criteriaBuilder) -> name != null ? criteriaBuilder.like(root.get("name"),
-                "%" + name + "%") : criteriaBuilder.conjunction();
+        Specification<Customer> spec = (root, query, criteriaBuilder) -> name != null
+                ? criteriaBuilder.like(root.get("name"),
+                        "%" + name + "%")
+                : criteriaBuilder.conjunction();
 
         return customerService.getAllCustomers(spec, pageable);
     }
