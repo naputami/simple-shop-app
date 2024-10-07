@@ -1,55 +1,4 @@
-<div class="navbar bg-base-100">
-  <div class="navbar-start">
-    <div class="dropdown">
-      <div tabindex="0" role="button" class="btn btn-ghost lg:hidden">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="h-5 w-5"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M4 6h16M4 12h8m-8 6h16"
-          />
-        </svg>
-      </div>
-      <ul
-        tabindex="0"
-        class="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow"
-      >
-        <li><a>Customer</a></li>
-        <li><a>Item</a></li>
-        <li><a>Order</a></li>
-        <li><a>Home</a></li>
-      </ul>
-    </div>
-    <a class="btn btn-ghost text-lg lg:text-xl">Simple Shop Data Management</a>
-  </div>
-  <div class="navbar-center hidden lg:flex">
-    <ul class="menu menu-horizontal px-1">
-      <li><a>Customer</a></li>
-      <li><a>Item</a></li>
-      <li><a>Order</a></li>
-    </ul>
-  </div>
-  <div class="navbar-end hidden lg:flex">
-    <button class="btn">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="1.2em"
-        height="1.2em"
-        viewBox="0 0 24 24"
-      >
-        <path fill="currentColor" d="M4 21V9l8-6l8 6v12h-6v-7h-4v7z" />
-      </svg>
-      Home
-    </button>
-  </div>
-</div>
+<app-navbar></app-navbar>
 @if (errorMessage) {
   <div role="alert" class="alert alert-error">
     <svg
@@ -64,6 +13,22 @@
         d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
     </svg>
     <span>{{errorMessage}}</span>
+  </div>
+}
+@if (isDeleteSuccess) {
+  <div role="alert" class="alert alert-success">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      class="h-6 w-6 shrink-0 stroke-current"
+      fill="none"
+      viewBox="0 0 24 24">
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+    </svg>
+    <span>Customer is successfully deleted</span>
   </div>
 }
 <div class="container mx-auto mt-5 px-5 pb-5">
@@ -141,7 +106,7 @@
             </div>
           </td>
           <th class="space-x-2">
-            <button class="btn btn-square btn-sm btn-primary">
+            <a class="btn btn-square btn-sm btn-primary" [routerLink]="'/customer/' + customer.id">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="1.2em"
@@ -153,8 +118,8 @@
                   d="M12 9a3 3 0 0 0-3 3a3 3 0 0 0 3 3a3 3 0 0 0 3-3a3 3 0 0 0-3-3m0 8a5 5 0 0 1-5-5a5 5 0 0 1 5-5a5 5 0 0 1 5 5a5 5 0 0 1-5 5m0-12.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5"
                 />
               </svg>
-            </button>
-            <button class="btn btn-square btn-sm btn-secondary">
+            </a>
+            <a class="btn btn-square btn-sm btn-secondary" [routerLink]="'/update-customer/' + customer.id">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="1.2em"
@@ -166,8 +131,8 @@
                   d="M3 21v-4.25L16.2 3.575q.3-.275.663-.425t.762-.15t.775.15t.65.45L20.425 5q.3.275.438.65T21 6.4q0 .4-.137.763t-.438.662L7.25 21zM17.6 7.8L19 6.4L17.6 5l-1.4 1.4z"
                 />
               </svg>
-            </button>
-            <button class="btn btn-square btn-sm btn-accent">
+            </a>
+            <button class="btn btn-square btn-sm btn-accent" (click)="openDeleteDialog(customer)">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="1.2em"
@@ -229,3 +194,24 @@
     />
   </svg>
 </button>
+<input type="checkbox" id="delete-confirm-modal" class="modal-toggle" [checked]="selectedCust !== null" />
+<label for="delete-confirm-modal" class="modal cursor-pointer">
+  <label class="modal-box relative" for="">
+    <h3 class="text-lg font-bold">Confirm Deletion</h3>
+    <p class="py-4">Are you sure you want to delete "{{ selectedCust?.name }}"?</p>
+    <div class="modal-action">
+      <button 
+        class="btn btn-outline"
+        (click)="closeDeleteDialog()"
+      >
+        Cancel
+      </button>
+      <button 
+        class="btn btn-error"
+        (click)="deleteCustomer()"
+      >
+        Delete
+      </button>
+    </div>
+  </label>
+</label>

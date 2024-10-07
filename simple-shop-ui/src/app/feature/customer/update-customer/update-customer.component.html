@@ -1,0 +1,187 @@
+<div class="flex h-screen justify-center items-center py-4">
+    <div class="w-[320px] max-h-[calc(100vh-32px)]">
+      @if (isShowingNotif) { @if(successMessage){
+      <div role="alert" class="alert alert-success">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-6 w-6 shrink-0 stroke-current"
+          fill="none"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+          />
+        </svg>
+        <span>{{ successMessage }}</span>
+      </div>
+      } @if(errorMessage){
+      <div role="alert" class="alert alert-error">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-6 w-6 shrink-0 stroke-current"
+          fill="none"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+          />
+        </svg>
+        <span>{{ errorMessage }}</span>
+      </div>
+      } }
+      <div class="flex space-x-2 items-center">
+        <button class="btn btn-circle btn-ghost" routerLink="/customer">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="1.2em"
+            height="1.2em"
+            viewBox="0 0 512 512"
+          >
+            <path
+              fill="none"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="48"
+              d="M244 400L100 256l144-144M120 256h292"
+            />
+          </svg>
+        </button>
+        <h1 class="font-semibold text-2xl tracking-wide">Edit Customer</h1>
+      </div>
+      <div class="avatar flex justify-center mt-4">
+        <div class="w-24 rounded-full">
+          <img
+            [src]="
+              imagePreview
+                ? imagePreview
+                : 'https://api.dicebear.com/9.x/lorelei/svg?seed=Katherine'
+            "
+            alt="Avatar"
+          />
+        </div>
+      </div>
+      <form class="mt-4" [formGroup]="customerForm" (ngSubmit)="onSubmit()">
+        <div class="space-y-1">
+          <label class="form-control w-full max-w-xs">
+            <div class="label">
+              <span class="label-text">Name</span>
+            </div>
+            <input
+              type="text"
+              placeholder="Type here"
+              class="input input-primary input-bordered w-full max-w-xs"
+              formControlName="name"
+              required
+            />
+            <div
+              class="label"
+              *ngIf="
+                customerForm.get('name')?.invalid &&
+                (customerForm.get('name')?.dirty ||
+                  customerForm.get('name')?.touched)
+              "
+            >
+              <span
+                class="label-text-alt text-error"
+                *ngIf="customerForm.get('name')?.errors?.['required']"
+                >Name is required</span
+              >
+            </div>
+          </label>
+          <label class="form-control w-full max-w-xs">
+            <div class="label">
+              <span class="label-text">Phone number</span>
+            </div>
+            <input
+              type="text"
+              placeholder="Type here"
+              class="input input-primary input-bordered w-full max-w-xs"
+              formControlName="phoneNumber"
+              required
+            />
+            <div
+              class="label"
+              *ngIf="
+                customerForm.get('phoneNumber')?.invalid &&
+                (customerForm.get('phoneNumber')?.dirty ||
+                  customerForm.get('phoneNumber')?.touched)
+              "
+            >
+              <span
+                class="label-text-alt text-error"
+                *ngIf="customerForm.get('phoneNumber')?.errors?.['required']"
+                >Phone Number is required</span
+              >
+            </div>
+          </label>
+          <label class="form-control w-full max-w-xs">
+            <div class="label">
+              <span class="label-text">Address</span>
+            </div>
+            <input
+              type="text"
+              placeholder="Type here"
+              class="input input-primary input-bordered w-full max-w-xs"
+              formControlName="address"
+              required
+            />
+            <div
+              class="label"
+              *ngIf="
+                customerForm.get('address')?.invalid &&
+                (customerForm.get('address')?.dirty ||
+                  customerForm.get('address')?.touched)
+              "
+            >
+              <span
+                class="label-text-alt text-error"
+                *ngIf="customerForm.get('address')?.errors?.['required']"
+                >Address is required</span
+              >
+            </div>
+          </label>
+          <label class="form-control w-full max-w-xs">
+            <div class="label">
+              <span class="label-text">Profile Picture</span>
+            </div>
+            <input
+              type="file"
+              class="file-input file-input-bordered file-input-primary w-full max-w-xs"
+              (change)="onFileSelect($event)"
+            />
+            <div
+              class="label"
+              *ngIf="
+                customerForm.get('imgFile')?.invalid &&
+                (customerForm.get('imgFile')?.dirty ||
+                  customerForm.get('imgFile')?.touched)
+              "
+            >
+              <!-- <span
+                class="label-text-alt text-error"
+                *ngIf="customerForm.get('imgFile')?.errors?.['required']"
+                >Profile picture is required</span
+              > -->
+            </div>
+          </label>
+          <div class="form-control">
+            <label class="label cursor-pointer">
+              <span class="label-text">Is active?</span>
+              <input type="checkbox" [checked]="data?.active? true: false" class="checkbox checkbox-primary" formControlName="isActive"/>
+            </label>
+          </div>
+        </div>
+        <div class="mt-6 pb-6">
+          <button class="btn btn-primary w-full" type="submit">Submit</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  

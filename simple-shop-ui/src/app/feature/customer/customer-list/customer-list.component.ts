@@ -2,13 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import { CustomerService } from '../../../services/customer.service';
 import { Customer } from '../../../model/customer.model';
 import { RouterLink } from '@angular/router';
+import { NavbarComponent } from '../../../shared/components/navbar/navbar.component';
 
 @Component({
   selector: 'app-customer-list',
   templateUrl: './customer-list.component.html',
   styleUrls: ['./customer-list.component.css'],
-  imports: [RouterLink],
-  standalone: true
+  imports: [RouterLink, NavbarComponent],
+  standalone: true,
 })
 export class CustomerListComponent implements OnInit {
   customers: Customer[] = [];
@@ -19,6 +20,10 @@ export class CustomerListComponent implements OnInit {
   totalPages: number = 0;
   isLoading: boolean = false;
   errorMessage: string = '';
+  isLoadingDelete: boolean = false;
+  selectedCust: Customer | null = null;
+  isDeleteSuccess: boolean = false;
+  isShowModal: boolean = false;
 
   constructor(private customerService: CustomerService) {}
 
@@ -40,7 +45,7 @@ export class CustomerListComponent implements OnInit {
             this.totalPages = response.totalPages;
           } else {
             this.errorMessage = response.message;
-            this.hideErrorAfterDelay()
+            this.hideErrorAfterDelay();
           }
           this.isLoading = false;
         },
@@ -50,6 +55,46 @@ export class CustomerListComponent implements OnInit {
           this.hideErrorAfterDelay();
         },
       });
+  }
+
+  deleteCustomer(): void {
+    if (this.selectedCust) {
+      this.isLoadingDelete = true;
+      this.customerService.deleteCustomer(this.selectedCust.id).subscribe({
+        next: (response) => {
+          if (response.status === 'OK') {
+            this.isLoadingDelete = false;
+            this.isDeleteSuccess = true;
+            this.customers = this.customers.filter(
+              (customer) => customer.id !== this.selectedCust?.id
+            );
+            this.selectedCust = null;
+            this.hideSuccessdeleteAfterDelay();
+          } else {
+            this.isLoadingDelete = false;
+            this.isDeleteSuccess = false;
+            this.selectedCust = null;
+            this.errorMessage = 'Something wrong please try again';
+            this.hideErrorAfterDelay();
+          }
+        },
+        error: (error) => {
+          this.isLoadingDelete = false;
+          this.isDeleteSuccess = false;
+          this.selectedCust = null;
+          this.errorMessage = 'Something wrong please try again';
+          this.hideErrorAfterDelay();
+        },
+      });
+    }
+  }
+
+  openDeleteDialog(selectedCust: Customer): void {
+    this.selectedCust = selectedCust;
+  }
+
+  closeDeleteDialog(): void {
+    this.selectedCust = null;
   }
 
   goToPage(page: number): void {
@@ -75,11 +120,14 @@ export class CustomerListComponent implements OnInit {
   hideErrorAfterDelay() {
     setTimeout(() => {
       this.errorMessage = '';
-    }, 3000); // Clears the error message after 3000 ms (3 seconds)
+    }, 3000);
   }
 
-  search(){
-    
+  hideSuccessdeleteAfterDelay() {
+    setTimeout(() => {
+      this.isDeleteSuccess = false;
+    }, 3000);
   }
 
+  search() {}
 }

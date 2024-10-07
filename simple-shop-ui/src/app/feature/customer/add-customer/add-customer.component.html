@@ -1,5 +1,40 @@
-<div class="flex h-screen justify-center items-center">
-  <div class="w-[320px]">
+<div class="flex h-screen justify-center items-center py-4">
+  <div class="w-[320px] max-h-[calc(100vh-32px)]">
+    @if (isShowingNotif) { @if(successMessage){
+    <div role="alert" class="alert alert-success">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-6 w-6 shrink-0 stroke-current"
+        fill="none"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+        />
+      </svg>
+      <span>{{ successMessage }}</span>
+    </div>
+    } @if(errorMessage){
+    <div role="alert" class="alert alert-error">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-6 w-6 shrink-0 stroke-current"
+        fill="none"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+        />
+      </svg>
+      <span>{{ errorMessage }}</span>
+    </div>
+    } }
     <div class="flex space-x-2 items-center">
       <button class="btn btn-circle btn-ghost" routerLink="/customer">
         <svg
@@ -20,12 +55,20 @@
       </button>
       <h1 class="font-semibold text-2xl tracking-wide">Add Customer</h1>
     </div>
-    <form
-      class="mt-4"
-      [formGroup]="customerForm"
-      (ngSubmit)="onSubmit()"
-    >
-      <div class="space-y-2">
+    <div class="avatar flex justify-center mt-4">
+      <div class="w-24 rounded-full">
+        <img
+          [src]="
+            imagePreview
+              ? imagePreview
+              : 'https://api.dicebear.com/9.x/lorelei/svg?seed=Katherine'
+          "
+          alt="Avatar"
+        />
+      </div>
+    </div>
+    <form class="mt-4" [formGroup]="customerForm" (ngSubmit)="onSubmit()">
+      <div class="space-y-1">
         <label class="form-control w-full max-w-xs">
           <div class="label">
             <span class="label-text">Name</span>
@@ -64,19 +107,19 @@
             required
           />
           <div
-          class="label"
-          *ngIf="
-            customerForm.get('phoneNumber')?.invalid &&
-            (customerForm.get('phoneNumber')?.dirty ||
-              customerForm.get('phoneNumber')?.touched)
-          "
-        >
-          <span
-            class="label-text-alt text-error"
-            *ngIf="customerForm.get('phoneNumber')?.errors?.['required']"
-            >Phone Number is required</span
+            class="label"
+            *ngIf="
+              customerForm.get('phoneNumber')?.invalid &&
+              (customerForm.get('phoneNumber')?.dirty ||
+                customerForm.get('phoneNumber')?.touched)
+            "
           >
-        </div>
+            <span
+              class="label-text-alt text-error"
+              *ngIf="customerForm.get('phoneNumber')?.errors?.['required']"
+              >Phone Number is required</span
+            >
+          </div>
         </label>
         <label class="form-control w-full max-w-xs">
           <div class="label">
@@ -90,19 +133,19 @@
             required
           />
           <div
-          class="label"
-          *ngIf="
-            customerForm.get('address')?.invalid &&
-            (customerForm.get('address')?.dirty ||
-              customerForm.get('address')?.touched)
-          "
-        >
-          <span
-            class="label-text-alt text-error"
-            *ngIf="customerForm.get('address')?.errors?.['required']"
-            >Address is required</span
+            class="label"
+            *ngIf="
+              customerForm.get('address')?.invalid &&
+              (customerForm.get('address')?.dirty ||
+                customerForm.get('address')?.touched)
+            "
           >
-        </div>
+            <span
+              class="label-text-alt text-error"
+              *ngIf="customerForm.get('address')?.errors?.['required']"
+              >Address is required</span
+            >
+          </div>
         </label>
         <label class="form-control w-full max-w-xs">
           <div class="label">
@@ -114,25 +157,24 @@
             (change)="onFileSelect($event)"
           />
           <div
-          class="label"
-          *ngIf="
-            customerForm.get('imgFile')?.invalid &&
-            (customerForm.get('imgFile')?.dirty ||
-              customerForm.get('imgFile')?.touched)
-          "
-        >
-          <span
-            class="label-text-alt text-error"
-            *ngIf="customerForm.get('imgFile')?.errors?.['required']"
-            >Profile picture is required</span
+            class="label"
+            *ngIf="
+              customerForm.get('imgFile')?.invalid &&
+              (customerForm.get('imgFile')?.dirty ||
+                customerForm.get('imgFile')?.touched)
+            "
           >
-        </div>
+            <span
+              class="label-text-alt text-error"
+              *ngIf="customerForm.get('imgFile')?.errors?.['required']"
+              >Profile picture is required</span
+            >
+          </div>
         </label>
       </div>
-      <div class="mt-6">
+      <div class="mt-6 pb-6">
         <button class="btn btn-primary w-full" type="submit">Submit</button>
       </div>
-     
     </form>
   </div>
 </div>

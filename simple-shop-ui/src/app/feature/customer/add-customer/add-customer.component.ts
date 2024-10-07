@@ -9,6 +9,7 @@ import {
 import { CustomerService } from '../../../services/customer.service';
 import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { imgTypeValidator } from '../../../shared/validators/img-type.validator';
 
 @Component({
   selector: 'app-add-customer',
@@ -19,6 +20,12 @@ import { CommonModule } from '@angular/common';
 })
 export class AddCustomerComponent {
   customerForm: FormGroup;
+  imagePreview: string | ArrayBuffer | null = null;
+  isSuccess: boolean = false;
+  isError: boolean = false;
+  successMessage: string = '';
+  errorMessage: string = '';
+  isShowingNotif : boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -28,8 +35,14 @@ export class AddCustomerComponent {
       name: new FormControl('', Validators.required),
       address: new FormControl('', Validators.required),
       phoneNumber: new FormControl('', Validators.required),
-      imgFile: new FormControl(null, Validators.required),
+      imgFile: new FormControl(null,[Validators.required, imgTypeValidator()]),
     });
+  }
+
+  hideMessageAfterDelay() {
+    setTimeout(() => {
+      this.isShowingNotif = false;
+    }, 3000); 
   }
 
   onFileSelect(event: any): void {
@@ -38,6 +51,12 @@ export class AddCustomerComponent {
       this.customerForm.patchValue({
         imgFile: file,
       });
+      this.customerForm.get('imgFile')?.updateValueAndValidity();
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.imagePreview = reader.result;
+      };
+      reader.readAsDataURL(file);
     }
   }
 
@@ -50,11 +69,19 @@ export class AddCustomerComponent {
       formData.append('imgFile', this.customerForm.get('imgFile')!.value);
 
       this.customerService.addCustomer(formData).subscribe({
-        next: (response) => console.log('Customer added successfully!', response),
-        error: (error) => console.error('Error adding customer:', error)
+        next: (response) => {
+          this.isShowingNotif = true;
+          this.successMessage= 'New Customer is successfully added';
+          this.hideMessageAfterDelay();
+        },
+        error: (error) => {
+          this.isShowingNotif = true;
+          this.errorMessage= 'Something wrong! please try again later.'
+          this.hideMessageAfterDelay();
+        }
       });
     } else {
-      console.error('Form is not valid!');
+      this.customerForm.markAllAsTouched();
     }
   }
 }
