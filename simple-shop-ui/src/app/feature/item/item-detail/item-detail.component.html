@@ -1,0 +1,95 @@
+<div class="flex h-screen justify-center items-center py-4">
+  <div class="w-[320px] max-h-[calc(100vh-32px)] mt-10">
+    @if(isError){
+    <div role="alert" class="alert alert-error">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-6 w-6 shrink-0 stroke-current"
+        fill="none"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+        />
+      </svg>
+      <span>{{ errorMessage }}</span>
+    </div>
+    }
+    <app-page-detail-title
+      title="Item Detail"
+      link="/item"
+    ></app-page-detail-title>
+    @if (isLoading) {
+    <div class="mt-4">
+      <span class="loading loading-spinner text-primary"></span>
+    </div>
+    } @if(!isLoading && isSuccess ){
+    <div class="pb-8">
+      <div class="flex justify-center mt-4">
+        <div class="w-52 rounded-md">
+          <img
+            [src]="
+              data?.imgUrl == null
+                ? 'https://api.dicebear.com/9.x/lorelei/svg?seed=Katherine'
+                : data?.imgUrl
+            "
+            alt="Avatar"
+          />
+        </div>
+      </div>
+      <div class="space-y-4 mt-4">
+        <div class="space-y-0.5">
+          <p class="font-bold tracking-tight text-sm text-primary">Name</p>
+          <p class="text-xl text-primary-content">{{ data?.name }}</p>
+        </div>
+        <div class="space-y-0.5">
+          <p class="font-bold tracking-tight text-sm text-primary">Item code</p>
+          <p class="text-xl text-primary-content">{{ data?.itemCode }}</p>
+        </div>
+        <div class="md:grid grid-cols-2 gap-2">
+          <div class="space-y-0.5">
+            <p class="font-bold tracking-tight text-sm text-primary">Stock</p>
+            <p class="text-xl text-primary-content">{{ data?.stock }}</p>
+          </div>
+          <div class="space-y-0.5">
+            <p class="font-bold tracking-tight text-sm text-primary">Price</p>
+            <p class="text-xl text-primary-content">{{ data?.price | currency:'IDR':'symbol':'1.0-0' }}</p>
+          </div>
+          <div class="space-y-0.5">
+            <p class="font-bold tracking-tight text-sm text-primary">
+              Last Restock Date
+            </p>
+            <p class="text-xl text-primary-content">
+              {{ data?.lastRestockDate }}
+            </p>
+          </div>
+          <div class="space-y-0.5">
+            <p class="font-bold tracking-tight text-sm text-primary">Status</p>
+            <p class="text-xl text-primary-content">
+              {{ data?.isAvailable ? "Available" : "Unavailable" }}
+            </p>
+          </div>
+        </div>
+        <div class="space-y-0.5">
+          <p class="font-bold tracking-tight text-sm text-primary">
+            Description
+          </p>
+          <p class="text-base text-primary-content">
+            {{ data?.desc }}
+          </p>
+        </div>
+      </div>
+      <div class="space-x-2 mt-4">
+        <a
+          class="btn btn-primary w-full"
+          [routerLink]="'/update-item/' + itemId"
+          >Edit</a
+        >
+      </div>
+    </div>
+    }
+  </div>
+</div>
