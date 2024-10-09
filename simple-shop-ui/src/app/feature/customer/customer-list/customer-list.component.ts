@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CustomerService } from '../../../services/customer.service';
 import { Customer } from '../../../model/customer.model';
 import { RouterLink } from '@angular/router';
 import { NavbarComponent } from '../../../shared/components/navbar/navbar.component';
+import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 
 @Component({
   selector: 'app-customer-list',
@@ -11,9 +12,9 @@ import { NavbarComponent } from '../../../shared/components/navbar/navbar.compon
   imports: [RouterLink, NavbarComponent],
   standalone: true,
 })
-export class CustomerListComponent implements OnInit {
+export class CustomerListComponent implements OnInit, OnDestroy {
   customers: Customer[] = [];
-  pageNo: number = 0;
+  pageNo: number = 1;
   pageSize: number = 10;
   name: string = '';
   totalElements: number = 0;
@@ -24,17 +25,30 @@ export class CustomerListComponent implements OnInit {
   selectedCust: Customer | null = null;
   isDeleteSuccess: boolean = false;
   isShowModal: boolean = false;
+  keywordInput = new Subject<string>();
+  sort: string = '';
 
   constructor(private customerService: CustomerService) {}
 
   ngOnInit(): void {
     this.fetchCustomers();
+    this.keywordInput
+      .pipe(debounceTime(300), distinctUntilChanged())
+      .subscribe((kw: string) => {
+        this.name = kw;
+        this.pageNo = 1;
+        this.fetchCustomers();
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.keywordInput.complete();
   }
 
   fetchCustomers(): void {
     this.isLoading = true;
     this.customerService
-      .getCustomers(this.pageNo, this.pageSize, this.name)
+      .getCustomers(this.pageNo - 1, this.pageSize, this.name, this.sort)
       .subscribe({
         next: (response) => {
           if (response.status === 'OK') {
@@ -129,5 +143,25 @@ export class CustomerListComponent implements OnInit {
     }, 3000);
   }
 
-  search() {}
+  onSearchName(e: Event): void {
+    const target = e.target as HTMLInputElement;
+    const value = target.value;
+    this.keywordInput.next(value);
+  }
+
+  onPageSizeChange(e: Event): void {
+    const target = e.target as HTMLInputElement;
+    const value = target.value;
+    this.pageSize = Number(value);
+    this.pageNo = 1; 
+    this.fetchCustomers()
+  }
+
+  onSortByChange(e: Event) : void {
+    const target = e.target as HTMLInputElement;
+    const value = target.value;
+    this.sort = value;
+    this.pageNo = 1;
+    this.fetchCustomers();
+  }
 }

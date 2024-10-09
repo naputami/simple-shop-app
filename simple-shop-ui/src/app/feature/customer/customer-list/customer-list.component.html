@@ -1,35 +1,38 @@
 <app-navbar></app-navbar>
 @if (errorMessage) {
-  <div role="alert" class="alert alert-error">
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      class="h-6 w-6 shrink-0 stroke-current"
-      fill="none"
-      viewBox="0 0 24 24">
-      <path
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        stroke-width="2"
-        d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
-    </svg>
-    <span>{{errorMessage}}</span>
-  </div>
-}
-@if (isDeleteSuccess) {
-  <div role="alert" class="alert alert-success">
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      class="h-6 w-6 shrink-0 stroke-current"
-      fill="none"
-      viewBox="0 0 24 24">
-      <path
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        stroke-width="2"
-        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-    </svg>
-    <span>Customer is successfully deleted</span>
-  </div>
+<div role="alert" class="alert alert-error">
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    class="h-6 w-6 shrink-0 stroke-current"
+    fill="none"
+    viewBox="0 0 24 24"
+  >
+    <path
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+    />
+  </svg>
+  <span>{{ errorMessage }}</span>
+</div>
+} @if (isDeleteSuccess) {
+<div role="alert" class="alert alert-success">
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    class="h-6 w-6 shrink-0 stroke-current"
+    fill="none"
+    viewBox="0 0 24 24"
+  >
+    <path
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+    />
+  </svg>
+  <span>Customer is successfully deleted</span>
+</div>
 }
 <div class="container mx-auto mt-5 px-5 pb-5">
   <h1 class="font-semibold text-2xl tracking-wide">Customer List</h1>
@@ -37,7 +40,12 @@
     <label
       class="input input-bordered input-primary w-full max-w-xs flex items-center gap-2"
     >
-      <input type="text" class="grow" placeholder="Search customer name" />
+      <input
+        type="text"
+        class="grow"
+        placeholder="Search customer name"
+        (input)="onSearchName($event)"
+      />
       <svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 16 16"
@@ -51,12 +59,15 @@
         />
       </svg>
     </label>
-    <select class="select select-primary w-full max-w-xs">
+    <select
+      class="select select-primary w-full max-w-xs"
+      (change)="onSortByChange($event)"
+    >
       <option disabled selected>Sort By</option>
-      <option>Name Ascending</option>
-      <option>Name Descending</option>
-      <option>Order Date Ascending</option>
-      <option>Order Date Descending</option>
+      <option value="name,asc">Name Ascending</option>
+      <option value="name,desc">Name Descending</option>
+      <option value="lastOrderDate,asc">Order Date Ascending</option>
+      <option value="lastOrderDate,desc">Order Date Descending</option>
     </select>
   </div>
   <div class="overflow-x-auto mt-5">
@@ -73,14 +84,14 @@
       </thead>
       <tbody>
         @if (isLoading) {
-          <tr>
-            <td colspan="5" class="text-center">
-              <span class="loading loading-spinner text-primary loading-lg"></span>
-            </td>
-          
-          </tr>
-        }
-        @for (customer of customers; track customer.id) {
+        <tr>
+          <td colspan="5" class="text-center">
+            <span
+              class="loading loading-spinner text-primary loading-lg"
+            ></span>
+          </td>
+        </tr>
+        } @for (customer of customers; track customer.id) {
         <tr>
           <td>
             <div class="flex items-center gap-3">
@@ -95,18 +106,23 @@
             </div>
           </td>
           <td>{{ customer.custCode }}</td>
-          <td>{{ customer.lastOrderDate? customer.lastOrderDate : '-' }}</td>
+          <td>{{ customer.lastOrderDate ? customer.lastOrderDate : "-" }}</td>
           <td>
             <div
               [class]="
-                customer.active ? 'badge badge-outline badge-success' : 'badge badge-outline badge-error'
+                customer.active
+                  ? 'badge badge-outline badge-success'
+                  : 'badge badge-outline badge-error'
               "
             >
               {{ customer.active ? "Active" : "Inactive" }}
             </div>
           </td>
           <th class="space-x-2">
-            <a class="btn btn-square btn-sm btn-primary" [routerLink]="'/customer/' + customer.id">
+            <a
+              class="btn btn-square btn-sm btn-primary"
+              [routerLink]="'/customer/' + customer.id"
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="1.2em"
@@ -119,7 +135,10 @@
                 />
               </svg>
             </a>
-            <a class="btn btn-square btn-sm btn-secondary" [routerLink]="'/update-customer/' + customer.id">
+            <a
+              class="btn btn-square btn-sm btn-secondary"
+              [routerLink]="'/update-customer/' + customer.id"
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="1.2em"
@@ -132,7 +151,10 @@
                 />
               </svg>
             </a>
-            <button class="btn btn-square btn-sm btn-accent" (click)="openDeleteDialog(customer)">
+            <button
+              class="btn btn-square btn-sm btn-accent"
+              (click)="openDeleteDialog(customer)"
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="1.2em"
@@ -154,7 +176,11 @@
       <!-- Page Size Selector -->
       <div>
         <label for="page-size" class="mr-2">Rows per page:</label>
-        <select id="page-size" class="select select-bordered select-sm">
+        <select
+          id="page-size"
+          class="select select-bordered select-sm"
+          (change)="onPageSizeChange($event)"
+        >
           <option value="5">5</option>
           <option value="10" selected>10</option>
           <option value="20">20</option>
@@ -163,11 +189,23 @@
 
       <!-- Pagination Buttons -->
       <div>
-        <button id="prev-btn" class="btn btn-sm btn-outline mr-2" disabled>
-          Previous
+        <button
+          id="prev-btn"
+          class="btn btn-sm btn-outline mr-2"
+          [disabled]="pageNo == 1"
+          (click)="prevPage()"
+        >
+          Prev
         </button>
-        <span id="page-info" class="mx-2">Page 1 of 1</span>
-        <button id="next-btn" class="btn btn-sm btn-outline" disabled>
+        <span id="page-info" class="mx-2">{{
+          "Page " + pageNo + " of " + totalPages
+        }}</span>
+        <button
+          id="next-btn"
+          class="btn btn-sm btn-outline"
+          [disabled]="pageNo == totalPages"
+          (click)="nextPage()"
+        >
           Next
         </button>
       </div>
@@ -194,24 +232,23 @@
     />
   </svg>
 </button>
-<input type="checkbox" id="delete-confirm-modal" class="modal-toggle" [checked]="selectedCust !== null" />
+<input
+  type="checkbox"
+  id="delete-confirm-modal"
+  class="modal-toggle"
+  [checked]="selectedCust !== null"
+/>
 <label for="delete-confirm-modal" class="modal cursor-pointer">
   <label class="modal-box relative" for="">
     <h3 class="text-lg font-bold">Confirm Deletion</h3>
-    <p class="py-4">Are you sure you want to delete "{{ selectedCust?.name }}"?</p>
+    <p class="py-4">
+      Are you sure you want to delete "{{ selectedCust?.name }}"?
+    </p>
     <div class="modal-action">
-      <button 
-        class="btn btn-outline"
-        (click)="closeDeleteDialog()"
-      >
+      <button class="btn btn-outline" (click)="closeDeleteDialog()">
         Cancel
       </button>
-      <button 
-        class="btn btn-error"
-        (click)="deleteCustomer()"
-      >
-        Delete
-      </button>
+      <button class="btn btn-error" (click)="deleteCustomer()">Delete</button>
     </div>
   </label>
 </label>
