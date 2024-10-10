@@ -36,7 +36,7 @@
 }
 <div class="container mx-auto mt-5 px-5 pb-5">
   <h1 class="font-semibold text-2xl tracking-wide">Customer List</h1>
-  <div class="space-y-3 mt-6 md:flex justify-between items-center">
+  <div class="space-y-3 md:space-y-0 mt-6 md:flex justify-between items-center">
     <label
       class="input input-bordered input-primary w-full max-w-xs flex items-center gap-2"
     >
@@ -118,7 +118,7 @@
               {{ customer.active ? "Active" : "Inactive" }}
             </div>
           </td>
-          <th class="space-x-2">
+          <th class="space-x-2 flex">
             <a
               class="btn btn-square btn-sm btn-primary"
               [routerLink]="'/customer/' + customer.id"
