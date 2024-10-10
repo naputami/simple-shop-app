@@ -1,0 +1,62 @@
+<!-- order-report-modal.component.html -->
+<!-- Button to open the modal -->
+
+<!-- Modal -->
+<input type="checkbox" id="order-report-modal" class="modal-toggle" />
+<div class="modal">
+  <div class="modal-box relative">
+    <label
+      for="order-report-modal"
+      class="btn btn-sm btn-circle absolute right-2 top-2"
+      >✕</label
+    >
+    <h3 class="text-lg font-bold">Generate Order Report</h3>
+
+    <form [formGroup]="orderReportForm" (ngSubmit)="onSubmit()" class="mt-4">
+      <div class="form-control">
+        <label class="cursor-pointer flex">
+        <input
+          type="checkbox"
+          class="checkbox mr-2"
+          name="selectAllDates"
+          (change)="onSelectAllDatesChange()"
+        />
+        Select All dates
+        </label>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text">Start Date</span>
+          </label>
+          <input
+            type="date"
+            class="input input-bordered"
+            formControlName="startDate"
+            required
+          />
+        </div>
+
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text">End Date</span>
+          </label>
+          <input
+            type="date"
+            class="input input-bordered"
+            formControlName="endDate"
+            required
+          />
+        </div>
+      </div>
+
+      <div class="modal-action">
+        <label for="order-report-modal" class="btn btn-ghost">Cancel</label>
+        <button type="submit" class="btn btn-primary" [disabled]="isSubmitting">
+          {{ isSubmitting ? "Submitting..." : "Submit" }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,80 @@
+<div class="flex h-screen justify-center items-center py-4">
+  <div class="w-[320px] max-h-[calc(100vh-32px)] mt-10">
+    @if(isError){
+    <div role="alert" class="alert alert-error">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-6 w-6 shrink-0 stroke-current"
+        fill="none"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+        />
+      </svg>
+      <span>{{ errorMessage }}</span>
+    </div>
+    }
+    <app-page-detail-title
+      title="Order Detail"
+      link="/order"
+    ></app-page-detail-title>
+    @if (isLoading) {
+    <div class="mt-4">
+      <span class="loading loading-spinner text-primary"></span>
+    </div>
+    } @if(!isLoading && isSuccess ){
+    <div class="pb-8">
+      <div class="space-y-4 mt-4">
+        <div class="space-y-0.5">
+          <p class="font-bold tracking-tight text-sm text-primary">
+            Order code
+          </p>
+          <p class="text-xl text-primary-content">{{ data?.code }}</p>
+        </div>
+        <div class="space-y-0.5">
+          <p class="font-bold tracking-tight text-sm text-primary">
+            Customer Name
+          </p>
+          <p class="text-xl text-primary-content">{{ data?.customerName }}</p>
+        </div>
+        <div class="space-y-0.5">
+          <p class="font-bold tracking-tight text-sm text-primary">Item name</p>
+          <p class="text-xl text-primary-content">{{ data?.itemName }}</p>
+        </div>
+        <div class="space-y-0.5">
+            <p class="font-bold tracking-tight text-sm text-primary">Quantity</p>
+            <p class="text-xl text-primary-content">{{ data?.qty }}</p>
+          </div>
+        <div class="space-y-0.5">
+          <p class="font-bold tracking-tight text-sm text-primary">
+            Total price
+          </p>
+          <p class="text-xl text-primary-content">
+            {{ data?.totalPrice | currency : "IDR" : "symbol" : "1.0-0" }}
+          </p>
+        </div>
+        <div class="space-y-0.5">
+          <p class="font-bold tracking-tight text-sm text-primary">
+            Order date
+          </p>
+          <p class="text-xl text-primary-content">
+            {{ data?.orderDate }}
+          </p>
+        </div>
+      </div>
+      <div class="space-x-2 mt-4">
+        <a
+          class="btn btn-primary w-full"
+          [routerLink]="'/update-order/' + orderId"
+          >Edit</a
+        >
+      </div>
+    </div>
+
+    }
+  </div>
+</div>

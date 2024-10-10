@@ -1,0 +1,174 @@
+<div class="flex h-screen justify-center items-center py-4">
+  <div class="w-[320px] max-h-[calc(100vh-32px)]">
+    @if (isShowingNotif) { @if(successMessage){
+    <div role="alert" class="alert alert-success">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-6 w-6 shrink-0 stroke-current"
+        fill="none"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+        />
+      </svg>
+      <span>{{ successMessage }}</span>
+    </div>
+    } @if(errorMessage){
+    <div role="alert" class="alert alert-error">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-6 w-6 shrink-0 stroke-current"
+        fill="none"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+        />
+      </svg>
+      <span>{{ errorMessage }}</span>
+    </div>
+    } }
+    <div class="flex space-x-2 items-center">
+      <button class="btn btn-circle btn-ghost" routerLink="/order">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="1.2em"
+          height="1.2em"
+          viewBox="0 0 512 512"
+        >
+          <path
+            fill="none"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="48"
+            d="M244 400L100 256l144-144M120 256h292"
+          />
+        </svg>
+      </button>
+      <h1 class="font-semibold text-2xl tracking-wide">Add Item</h1>
+    </div>
+    <form class="mt-4" [formGroup]="orderForm" (ngSubmit)="OnSubmit()">
+      <div class="space-y-1">
+        <label class="form-control w-full max-w-xs">
+          <div class="label">
+            <span class="label-text">Customer</span>
+          </div>
+          <select
+            class="select select-primary"
+            formControlName="customerId"
+            required
+          >
+            <option disabled selected>Pick one</option>
+            @for (option of customerOptions; track option.id) {
+            <option [value]="option.id">{{ option.name }}</option>
+            }
+          </select>
+          <div
+            class="label"
+            *ngIf="
+              orderForm.get('customerId')?.invalid &&
+              (orderForm.get('customerId')?.dirty ||
+                orderForm.get('customerId')?.touched)
+            "
+          >
+            <span
+              class="label-text-alt text-error"
+              *ngIf="orderForm.get('customerId')?.errors?.['required']"
+              >Customer name is required</span
+            >
+          </div>
+        </label>
+        <label class="form-control w-full max-w-xs">
+          <div class="label">
+            <span class="label-text">Stock</span>
+          </div>
+          <select
+            class="select select-primary"
+            formControlName="itemId"
+            required
+          >
+            <option disabled selected>Pick one</option>
+            @for (option of itemOptions; track option.id) {
+                <option [value]="option.id">{{ option.name }}</option>
+                }
+          </select>
+          <div
+            class="label"
+            *ngIf="
+              orderForm.get('itemId')?.invalid &&
+              (orderForm.get('itemId')?.dirty || orderForm.get('itemId')?.touched)
+            "
+          >
+            <span
+              class="label-text-alt text-error"
+              *ngIf="orderForm.get('itemId')?.errors?.['required']"
+              >Item name is required</span
+            >
+          </div>
+        </label>
+        <label class="form-control w-full max-w-xs">
+          <div class="label">
+            <span class="label-text">Quantity</span>
+          </div>
+          <input
+            type="number"
+            placeholder="Type here"
+            class="input input-primary input-bordered w-full max-w-xs"
+            formControlName="qty"
+            required
+          />
+          <div
+            class="label"
+            *ngIf="
+              orderForm.get('qty')?.invalid &&
+              (orderForm.get('qty')?.dirty || orderForm.get('qty')?.touched)
+            "
+          >
+            <span
+              class="label-text-alt text-error"
+              *ngIf="orderForm.get('qty')?.errors?.['required']"
+              >Quantityis required</span
+            >
+          </div>
+        </label>
+        <label class="form-control w-full max-w-xs">
+          <div class="label">
+            <span class="label-text">Order Date</span>
+          </div>
+          <input
+            type="date"
+            placeholder="Type here"
+            class="input input-primary input-bordered w-full max-w-xs"
+            formControlName="orderDate"
+            required
+          />
+          <div
+            class="label"
+            *ngIf="
+              orderForm.get('orderDate')?.invalid &&
+              (orderForm.get('orderDate')?.dirty ||
+                orderForm.get('orderDate')?.touched)
+            "
+          >
+            <span
+              class="label-text-alt text-error"
+              *ngIf="orderForm.get('orderDate')?.errors?.['required']"
+              >Order date is required</span
+            >
+          </div>
+        </label>
+      </div>
+      <div class="mt-6 pb-6">
+        <button class="btn btn-primary w-full" type="submit">Submit</button>
+      </div>
+    </form>
+  </div>
+</div>

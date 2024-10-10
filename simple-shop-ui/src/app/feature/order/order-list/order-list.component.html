@@ -1,0 +1,240 @@
+<app-navbar></app-navbar>
+@if (errorMessage) {
+<div role="alert" class="alert alert-error">
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    class="h-6 w-6 shrink-0 stroke-current"
+    fill="none"
+    viewBox="0 0 24 24"
+  >
+    <path
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+    />
+  </svg>
+  <span>{{ errorMessage }}</span>
+</div>
+} @if (isDeleteSuccess) {
+<div role="alert" class="alert alert-success">
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    class="h-6 w-6 shrink-0 stroke-current"
+    fill="none"
+    viewBox="0 0 24 24"
+  >
+    <path
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+    />
+  </svg>
+  <span>Order is successfully deleted</span>
+</div>
+}
+<div class="container mx-auto mt-5 px-5 pb-5">
+  <h1 class="font-semibold text-2xl tracking-wide">Order List</h1>
+  <div class="space-y-3 md:space-y-0 mt-6 md:flex justify-between items-center">
+    <label
+      class="input input-bordered input-primary w-full max-w-xs flex items-center gap-2"
+    >
+      <input
+        type="text"
+        class="grow"
+        placeholder="Search order code"
+        (input)="onSearchCode($event)"
+      />
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 16 16"
+        fill="currentColor"
+        class="h-4 w-4 opacity-70"
+      >
+        <path
+          fill-rule="evenodd"
+          d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
+          clip-rule="evenodd"
+        />
+      </svg>
+    </label>
+    <label for="order-report-modal" class="btn btn-primary w-full max-w-xs"
+      >Generate Order Report</label
+    >
+    <select
+      class="select select-primary w-full max-w-xs"
+      (change)="onSortByChange($event)"
+    >
+      <option disabled selected>Sort By</option>
+      <option value="orderDate,asc">Order Date Ascending</option>
+      <option value="orderDate,desc">Order Date Descending</option>
+      <option value="totalPrice,asc">Total Price Ascending</option>
+      <option value="totalPrice,desc">Total Price Descending</option>
+    </select>
+  </div>
+  <div class="overflow-x-auto mt-5">
+    <table class="table">
+      <!-- head -->
+      <thead>
+        <tr>
+          <th>Order code</th>
+          <th>Order date</th>
+          <th>Total price</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @if (isLoading) {
+        <tr>
+          <td colspan="4" class="text-center">
+            <span
+              class="loading loading-spinner text-primary loading-lg"
+            ></span>
+          </td>
+        </tr>
+        } @for (order of orders; track order.id) {
+        <tr>
+          <td>
+            {{ order.code }}
+          </td>
+          <td>{{ order.orderDate }}</td>
+          <td>
+            {{ order.totalPrice | currency : "IDR" : "symbol" : "1.0-0" }}
+          </td>
+          <th class="space-x-2 flex items-center">
+            <a
+              class="btn btn-square btn-sm btn-primary"
+              [routerLink]="'/order/' + order.id"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="1.2em"
+                height="1.2em"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  fill="currentColor"
+                  d="M12 9a3 3 0 0 0-3 3a3 3 0 0 0 3 3a3 3 0 0 0 3-3a3 3 0 0 0-3-3m0 8a5 5 0 0 1-5-5a5 5 0 0 1 5-5a5 5 0 0 1 5 5a5 5 0 0 1-5 5m0-12.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5"
+                />
+              </svg>
+            </a>
+            <a
+              class="btn btn-square btn-sm btn-secondary"
+              [routerLink]="'/update-order/' + order.id"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="1.2em"
+                height="1.2em"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  fill="currentColor"
+                  d="M3 21v-4.25L16.2 3.575q.3-.275.663-.425t.762-.15t.775.15t.65.45L20.425 5q.3.275.438.65T21 6.4q0 .4-.137.763t-.438.662L7.25 21zM17.6 7.8L19 6.4L17.6 5l-1.4 1.4z"
+                />
+              </svg>
+            </a>
+            <button
+              class="btn btn-square btn-sm btn-accent"
+              (click)="openDeleteDialog(order)"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="1.2em"
+                height="1.2em"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  fill="currentColor"
+                  d="M19 4h-3.5l-1-1h-5l-1 1H5v2h14M6 19a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7H6z"
+                />
+              </svg>
+            </button>
+          </th>
+        </tr>
+        }
+      </tbody>
+    </table>
+    <div class="lg:flex justify-between items-center mt-4 space-y-2">
+      <!-- Page Size Selector -->
+      <div>
+        <label for="page-size" class="mr-2">Rows per page:</label>
+        <select
+          id="page-size"
+          class="select select-bordered select-sm"
+          (change)="onPageSizeChange($event)"
+        >
+          <option value="5">5</option>
+          <option value="10" selected>10</option>
+          <option value="20">20</option>
+        </select>
+      </div>
+
+      <!-- Pagination Buttons -->
+      <div>
+        <button
+          id="prev-btn"
+          class="btn btn-sm btn-outline mr-2"
+          [disabled]="pageNo == 1"
+          (click)="prevPage()"
+        >
+          Prev
+        </button>
+        <span id="page-info" class="mx-2">{{
+          "Page " + pageNo + " of " + totalPages
+        }}</span>
+        <button
+          id="next-btn"
+          class="btn btn-sm btn-outline"
+          [disabled]="pageNo == totalPages"
+          (click)="nextPage()"
+        >
+          Next
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<button
+  class="btn btn-primary btn-circle fixed bottom-5 right-5 shadow-lg hover:bg-primary-focus transition-colors duration-300"
+  aria-label="Add New"
+  routerLink="/add-order"
+>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    class="h-6 w-6 text-white"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke="currentColor"
+  >
+    <path
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      d="M12 4v16m8-8H4"
+    />
+  </svg>
+</button>
+<input
+  type="checkbox"
+  id="delete-confirm-modal"
+  class="modal-toggle"
+  [checked]="selectedOrder !== null"
+/>
+<label for="delete-confirm-modal" class="modal cursor-pointer">
+  <label class="modal-box relative" for="">
+    <h3 class="text-lg font-bold">Confirm Deletion</h3>
+    <p class="py-4">
+      Are you sure you want to delete order with code {{ selectedOrder?.code }}?
+    </p>
+    <div class="modal-action">
+      <button class="btn btn-outline" (click)="closeDeleteDialog()">
+        Cancel
+      </button>
+      <button class="btn btn-error" (click)="deleteOrder()">Delete</button>
+    </div>
+  </label>
+</label>
+<app-order-report-model></app-order-report-model>
