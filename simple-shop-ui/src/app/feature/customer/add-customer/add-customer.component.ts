@@ -10,11 +10,12 @@ import { CustomerService } from '../../../services/customer.service';
 import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { imgTypeValidator } from '../../../shared/validators/img-type.validator';
+import { PageDetailTitleComponent } from '../../../shared/components/page-detail-title/page-detail-title.component';
 
 @Component({
   selector: 'app-add-customer',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterLink, CommonModule],
+  imports: [ReactiveFormsModule, PageDetailTitleComponent, CommonModule],
   templateUrl: './add-customer.component.html',
   styleUrl: './add-customer.component.css',
 })

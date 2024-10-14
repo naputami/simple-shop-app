@@ -35,26 +35,10 @@
       <span>{{ errorMessage }}</span>
     </div>
     } }
-    <div class="flex space-x-2 items-center">
-      <button class="btn btn-circle btn-ghost" routerLink="/customer">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="1.2em"
-          height="1.2em"
-          viewBox="0 0 512 512"
-        >
-          <path
-            fill="none"
-            stroke="currentColor"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="48"
-            d="M244 400L100 256l144-144M120 256h292"
-          />
-        </svg>
-      </button>
-      <h1 class="font-semibold text-2xl tracking-wide">Add Customer</h1>
-    </div>
+    <app-page-detail-title
+      title="Add new customer"
+      link="/customer"
+    ></app-page-detail-title>
     <div class="avatar flex justify-center mt-4">
       <div class="w-24 rounded-full">
         <img

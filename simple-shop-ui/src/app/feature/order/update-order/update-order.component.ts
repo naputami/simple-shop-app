@@ -13,11 +13,16 @@ import { OrderDetail } from '../../../model/order-detail.moodel';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { forkJoin, take } from 'rxjs';
+import { PageDetailTitleComponent } from '../../../shared/components/page-detail-title/page-detail-title.component';
 
 @Component({
   selector: 'app-update-order',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    PageDetailTitleComponent,
+  ],
   templateUrl: './update-order.component.html',
   styleUrl: './update-order.component.css',
 })

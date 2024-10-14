@@ -5,11 +5,12 @@ import { ItemService } from '../../../services/item.service';
 import { NavbarComponent } from '../../../shared/components/navbar/navbar.component';
 import { RouterLink } from '@angular/router';
 import { CurrencyPipe } from '@angular/common';
+import { AddButtonComponent } from '../../../shared/components/add-button/add-button.component';
 
 @Component({
   selector: 'app-item-list',
   standalone: true,
-  imports: [NavbarComponent, RouterLink, CurrencyPipe],
+  imports: [NavbarComponent, RouterLink, CurrencyPipe, AddButtonComponent],
   templateUrl: './item-list.component.html',
   styleUrl: './item-list.component.css',
 })

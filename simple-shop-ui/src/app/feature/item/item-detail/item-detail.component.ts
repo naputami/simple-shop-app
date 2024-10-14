@@ -47,8 +47,9 @@ export class ItemDetailComponent implements OnInit {
 
       },
       error: (error) => {
+        this.isError = true;
         this.isLoading = false;
-        this.errorMessage = "Something wrong, please try again"
+        this.errorMessage = error.message;
         this.hideErrorAfterDelay()
       }
     })

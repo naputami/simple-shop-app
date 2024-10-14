@@ -35,26 +35,10 @@
       <span>{{ errorMessage }}</span>
     </div>
     } }
-    <div class="flex space-x-2 items-center">
-      <button class="btn btn-circle btn-ghost" routerLink="/order">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="1.2em"
-          height="1.2em"
-          viewBox="0 0 512 512"
-        >
-          <path
-            fill="none"
-            stroke="currentColor"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="48"
-            d="M244 400L100 256l144-144M120 256h292"
-          />
-        </svg>
-      </button>
-      <h1 class="font-semibold text-2xl tracking-wide">Update Item</h1>
-    </div>
+    <app-page-detail-title
+      link="/order"
+      title="Update order"
+    ></app-page-detail-title>
     <form class="mt-4" [formGroup]="orderForm" (ngSubmit)="OnSubmit()">
       <div class="space-y-1">
         <label class="form-control w-full max-w-xs">
@@ -67,9 +51,7 @@
             required
           >
             @for (option of customerOptions; track option.id) {
-            <option
-              [value]="option.id"
-            >
+            <option [value]="option.id">
               {{ option.name }}
             </option>
             }
@@ -99,9 +81,7 @@
             required
           >
             @for (option of itemOptions; track option.id) {
-            <option
-              [value]="option.id"
-            >
+            <option [value]="option.id">
               {{ option.name }}
             </option>
             }

@@ -4,12 +4,13 @@ import { Customer } from '../../../model/customer.model';
 import { RouterLink } from '@angular/router';
 import { NavbarComponent } from '../../../shared/components/navbar/navbar.component';
 import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
+import { AddButtonComponent } from '../../../shared/components/add-button/add-button.component';
 
 @Component({
   selector: 'app-customer-list',
   templateUrl: './customer-list.component.html',
   styleUrls: ['./customer-list.component.css'],
-  imports: [RouterLink, NavbarComponent],
+  imports: [RouterLink, NavbarComponent, AddButtonComponent],
   standalone: true,
 })
 export class CustomerListComponent implements OnInit, OnDestroy {

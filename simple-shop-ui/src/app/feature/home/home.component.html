@@ -1,0 +1,86 @@
+<div class="flex md:h-screen justify-center items-center p-8 flex-col">
+    <div class="text-center space-y-3">
+      <h1 class="font-bold tracking-wide text-2xl">Welcome to Simple Shop App</h1>
+      <p class="font-semibold text-xl">What will you manage?</p>
+    </div>
+    <div class="flex flex-col md:flex-row gap-2 mt-4">
+      <div
+        class="w-32 border border-primary rounded-md p-6 space-y-2 hover:bg-base-200 hover:cursor-pointer"
+        routerLink="/customer"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="1.2em"
+          height="1.2em"
+          viewBox="0 0 24 24"
+        >
+          <path
+            fill="currentColor"
+            d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5s-3 1.34-3 3s1.34 3 3 3m-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5S5 6.34 5 8s1.34 3 3 3m0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5m8 0c-.29 0-.62.02-.97.05c1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5"
+          />
+        </svg>
+        Customer
+      </div>
+      <div
+        class="w-32 border border-secondary rounded-md p-6 space-y-2 hover:bg-base-200 hover:cursor-pointer"
+        routerLink="/item"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="1.2em"
+          height="1.2em"
+          viewBox="0 0 24 24"
+        >
+          <path
+            fill="currentColor"
+            d="M5 21q-.825 0-1.412-.587T3 19V6.525q0-.35.113-.675t.337-.6L4.7 3.725q.275-.35.687-.538T6.25 3h11.5q.45 0 .863.188t.687.537l1.25 1.525q.225.275.338.6t.112.675V19q0 .825-.587 1.413T19 21zm.4-15h13.2l-.85-1H6.25zM16 8H8v8l4-2l4 2z"
+          />
+        </svg>
+        Item
+      </div>
+      <div
+        class="w-32 border border-accent rounded-md p-6 space-y-2 hover:bg-base-200 hover:cursor-pointer"
+        routerLink="/order"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="1.2em"
+          height="1.2em"
+          viewBox="0 0 24 24"
+        >
+          <g fill="none">
+            <path
+              d="m12.593 23.258l-.011.002l-.071.035l-.02.004l-.014-.004l-.071-.035q-.016-.005-.024.005l-.004.01l-.017.428l.005.02l.01.013l.104.074l.015.004l.012-.004l.104-.074l.012-.016l.004-.017l-.017-.427q-.004-.016-.017-.018m.265-.113l-.013.002l-.185.093l-.01.01l-.003.011l.018.43l.005.012l.008.007l.201.093q.019.005.029-.008l.004-.014l-.034-.614q-.005-.018-.02-.022m-.715.002a.02.02 0 0 0-.027.006l-.006.014l-.034.614q.001.018.017.024l.015-.002l.201-.093l.01-.008l.004-.011l.017-.43l-.003-.012l-.01-.01z"
+            />
+            <path
+              fill="currentColor"
+              d="M16 3a3 3 0 0 1 2.995 2.824L19 6v10h.75c.647 0 1.18.492 1.244 1.122l.006.128V19a3 3 0 0 1-2.824 2.995L18 22H8a3 3 0 0 1-2.995-2.824L5 19V9H3.25a1.25 1.25 0 0 1-1.244-1.122L2 7.75V6a3 3 0 0 1 2.824-2.995L5 3zm3 15h-9v1c0 .35-.06.687-.17 1H18a1 1 0 0 0 1-1zm-7-6h-2a1 1 0 0 0-.117 1.993L10 14h2a1 1 0 0 0 .117-1.993zm2-4h-4a1 1 0 0 0 0 2h4a1 1 0 1 0 0-2M5 5a1 1 0 0 0-1 1v1h1z"
+            />
+          </g>
+        </svg>
+        Order
+      </div>
+    </div>
+    <div class="mt-12 space-y-3">
+      <p class="text-center font-semibold">Statistic summary</p>
+      <div>
+        <div class="stats stats-vertical lg:stats-horizontal shadow">
+          <div class="stat">
+            <div class="stat-title">Customers</div>
+            <div class="stat-value text-primary">{{ data?.totalCustomer }}</div>
+          </div>
+  
+          <div class="stat">
+            <div class="stat-title">Items</div>
+            <div class="stat-value text-secondary">{{ data?.totalItem }}</div>
+          </div>
+  
+          <div class="stat">
+            <div class="stat-title">Orders</div>
+            <div class="stat-value text-accent">{{ data?.totalOrder }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  

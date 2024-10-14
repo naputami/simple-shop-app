@@ -11,11 +11,16 @@ import { ItemService } from '../../../services/item.service';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { ItemDetail } from '../../../model/item-detail.model';
 import { CommonModule } from '@angular/common';
+import { PageDetailTitleComponent } from '../../../shared/components/page-detail-title/page-detail-title.component';
 
 @Component({
   selector: 'app-update-item',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    PageDetailTitleComponent,
+  ],
   templateUrl: './update-item.component.html',
   styleUrl: './update-item.component.css',
 })

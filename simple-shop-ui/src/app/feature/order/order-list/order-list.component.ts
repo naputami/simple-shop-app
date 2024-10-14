@@ -6,13 +6,20 @@ import { Order } from '../../../model/order.model';
 import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 import { OrderService } from '../../../services/order.service';
 import { OrderReportModelComponent } from '../../report/order-report-model/order-report-model.component';
+import { AddButtonComponent } from '../../../shared/components/add-button/add-button.component';
 
 @Component({
   selector: 'app-order-list',
   standalone: true,
-  imports: [NavbarComponent, RouterLink, CurrencyPipe, OrderReportModelComponent],
+  imports: [
+    NavbarComponent,
+    RouterLink,
+    CurrencyPipe,
+    OrderReportModelComponent,
+    AddButtonComponent,
+  ],
   templateUrl: './order-list.component.html',
-  styleUrl: './order-list.component.css'
+  styleUrl: './order-list.component.css',
 })
 export class OrderListComponent implements OnInit, OnDestroy {
   orders: Order[] = [];
@@ -33,54 +40,54 @@ export class OrderListComponent implements OnInit, OnDestroy {
   constructor(private orderService: OrderService) {}
 
   ngOnInit(): void {
-      this.fetchOrders();
-      this.keywordInput
-          .pipe(debounceTime(300), distinctUntilChanged())
-          .subscribe((kw: string) => {
-            this.code = kw;
-            this.pageNo = 1;
-            this.fetchOrders();
-          })
+    this.fetchOrders();
+    this.keywordInput
+      .pipe(debounceTime(300), distinctUntilChanged())
+      .subscribe((kw: string) => {
+        this.code = kw;
+        this.pageNo = 1;
+        this.fetchOrders();
+      });
   }
 
   ngOnDestroy(): void {
-      this.keywordInput.complete();
+    this.keywordInput.complete();
   }
 
   fetchOrders(): void {
     this.isLoading = true;
     this.orderService
-        .getOrders(this.pageNo -1, this.pageSize, this.code, this.sort)
-        .subscribe({
-          next: (response) => {
-            if (response.status === 'OK') {
-              this.orders = response.data;
-              this.pageNo = response.pageNo;
-              this.pageSize = response.pageSize;
-              this.totalElements = response.totalElements;
-              this.totalPages = response.totalPages;
-            } else {
-              this.errorMessage = response.message;
-              this.hideErrorAfterDelay();
-            }
-            this.isLoading = false;
-          },
-          error: (error) => {
-            this.isLoadingDelete = false;
-            this.isDeleteSuccess = false;
-            this.selectedOrder = null;
-            this.errorMessage = 'Something wrong please try again';
+      .getOrders(this.pageNo - 1, this.pageSize, this.code, this.sort)
+      .subscribe({
+        next: (response) => {
+          if (response.status === 'OK') {
+            this.orders = response.data;
+            this.pageNo = response.pageNo;
+            this.pageSize = response.pageSize;
+            this.totalElements = response.totalElements;
+            this.totalPages = response.totalPages;
+          } else {
+            this.errorMessage = response.message;
             this.hideErrorAfterDelay();
           }
-        })
+          this.isLoading = false;
+        },
+        error: (error) => {
+          this.isLoadingDelete = false;
+          this.isDeleteSuccess = false;
+          this.selectedOrder = null;
+          this.errorMessage = 'Something wrong please try again';
+          this.hideErrorAfterDelay();
+        },
+      });
   }
 
   deleteOrder(): void {
-    if(this.selectedOrder){
+    if (this.selectedOrder) {
       this.isLoadingDelete = true;
       this.orderService.deleteOrder(this.selectedOrder.id).subscribe({
         next: (response) => {
-          if(response.status === 'OK'){
+          if (response.status === 'OK') {
             this.isLoadingDelete = false;
             this.isDeleteSuccess = true;
             this.orders = this.orders.filter(
@@ -88,7 +95,7 @@ export class OrderListComponent implements OnInit, OnDestroy {
             );
             this.selectedOrder = null;
             this.hideSuccessdeleteAfterDelay();
-          }else {
+          } else {
             this.isLoadingDelete = false;
             this.isDeleteSuccess = false;
             this.selectedOrder = null;
@@ -102,11 +109,10 @@ export class OrderListComponent implements OnInit, OnDestroy {
           this.selectedOrder = null;
           this.errorMessage = 'Something wrong please try again';
           this.hideErrorAfterDelay();
-        }
-      })
+        },
+      });
     }
   }
-
 
   openDeleteDialog(selectedOrder: Order): void {
     this.selectedOrder = selectedOrder;
@@ -168,5 +174,4 @@ export class OrderListComponent implements OnInit, OnDestroy {
     this.pageNo = 1;
     this.fetchOrders();
   }
-
 }

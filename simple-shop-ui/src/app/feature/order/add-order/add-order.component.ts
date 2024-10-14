@@ -11,11 +11,16 @@ import { OrderService } from '../../../services/order.service';
 import { CustomerOption, ItemOption } from '../../../model/option.model';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { PageDetailTitleComponent } from '../../../shared/components/page-detail-title/page-detail-title.component';
 
 @Component({
   selector: 'app-add-order',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule, RouterLink],
+  imports: [
+    ReactiveFormsModule,
+    CommonModule,
+    PageDetailTitleComponent,
+  ],
   templateUrl: './add-order.component.html',
   styleUrl: './add-order.component.css',
 })
@@ -84,7 +89,7 @@ export class AddOrderComponent implements OnInit {
   }
 
   OnSubmit(): void {
-    if(this.orderForm.valid){
+    if (this.orderForm.valid) {
       const formData = new FormData();
       formData.append('customerId', this.orderForm.get('customerId')!.value);
       formData.append('itemId', this.orderForm.get('itemId')!.value);
@@ -101,7 +106,7 @@ export class AddOrderComponent implements OnInit {
           this.errorMessage = 'Something wrong! please try again later.';
           this.hideMessageAfterDelay();
         },
-      })
+      });
     } else {
       this.orderForm.markAllAsTouched();
     }

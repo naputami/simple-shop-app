@@ -10,11 +10,12 @@ import { ItemService } from '../../../services/item.service';
 import { imgTypeValidator } from '../../../shared/validators/img-type.validator';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { PageDetailTitleComponent } from '../../../shared/components/page-detail-title/page-detail-title.component';
 
 @Component({
   selector: 'app-add-item',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule, RouterLink],
+  imports: [ReactiveFormsModule, CommonModule, PageDetailTitleComponent],
   templateUrl: './add-item.component.html',
   styleUrl: './add-item.component.css',
 })

@@ -11,6 +11,7 @@ import { OrderListComponent } from './feature/order/order-list/order-list.compon
 import { AddOrderComponent } from './feature/order/add-order/add-order.component';
 import { OrderDetailComponent } from './feature/order/order-detail/order-detail.component';
 import { UpdateOrderComponent } from './feature/order/update-order/update-order.component';
+import { HomeComponent } from './feature/home/home.component';
 
 export const routes: Routes = [
   { path: 'customer', component: CustomerListComponent },
@@ -25,4 +26,5 @@ export const routes: Routes = [
   { path: 'add-order', component: AddOrderComponent },
   { path: 'order/:orderId', component: OrderDetailComponent },
   { path: 'update-order/:orderId', component: UpdateOrderComponent },
+  { path: '', component: HomeComponent },
 ];
