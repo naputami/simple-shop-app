@@ -72,12 +72,13 @@
         </label>
         <label class="form-control w-full max-w-xs">
           <div class="label">
-            <span class="label-text">Stock</span>
+            <span class="label-text">Item</span>
           </div>
           <select
             class="select select-primary"
             formControlName="itemId"
             required
+            (change)="onItemChange($event)"
           >
             <option disabled selected>Pick one</option>
             @for (option of itemOptions; track option.id) {
@@ -109,6 +110,7 @@
             class="input input-primary input-bordered w-full max-w-xs"
             formControlName="qty"
             required
+            (change)="onQtyChange($event)"
           />
           <div
             class="label"
@@ -150,6 +152,10 @@
             >
           </div>
         </label>
+        <div class="mt-6 space-y-2">
+          <p><span class="font-semibold text-primary">Item Price:</span> {{selectedItem?.price | currency : "IDR" : "symbol" : "1.0-0"}}</p>
+          <p><span class="font-semibold text-primary">Total price:</span> {{totalPrice | currency : "IDR" : "symbol" : "1.0-0"}}</p>
+        </div>
       </div>
       <div class="mt-6 pb-6">
         <button class="btn btn-primary w-full" type="submit">Submit</button>

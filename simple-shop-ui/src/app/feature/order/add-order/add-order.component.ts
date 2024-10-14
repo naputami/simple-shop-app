@@ -33,6 +33,9 @@ export class AddOrderComponent implements OnInit {
   isShowingNotif: boolean = false;
   customerOptions: CustomerOption[] | null = [];
   itemOptions: ItemOption[] | null = [];
+  totalPrice: number = 0;
+  qty: number = 0; 
+  selectedItem: ItemOption | null = null;
 
   constructor(
     private fb: FormBuilder,
@@ -109,6 +112,25 @@ export class AddOrderComponent implements OnInit {
       });
     } else {
       this.orderForm.markAllAsTouched();
+    }
+  }
+
+  onQtyChange(e: Event): void {
+    const target = e.target as HTMLInputElement;
+    const value = target.value;
+    this.qty = Number(value);
+    if(this.selectedItem){
+      this.totalPrice = this.qty * this.selectedItem?.price;
+    }
+  }
+
+  onItemChange(e: Event): void{
+    const target = e.target as HTMLInputElement;
+    const value = target.value;
+    const selectedItemOption = this.itemOptions?.filter(item => item.id === value)[0];
+    if(selectedItemOption){
+      this.selectedItem = selectedItemOption;
+      this.totalPrice = this.qty * selectedItemOption?.price
     }
   }
 }

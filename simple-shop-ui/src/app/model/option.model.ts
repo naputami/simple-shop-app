@@ -5,5 +5,6 @@ export interface CustomerOption {
 
 export interface ItemOption {
     id: string,
-    name: string
+    name: string,
+    price: number
 }
