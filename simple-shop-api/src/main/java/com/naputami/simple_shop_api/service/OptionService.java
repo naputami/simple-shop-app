@@ -3,6 +3,7 @@ package com.naputami.simple_shop_api.service;
 import org.springframework.stereotype.Service;
 
 import com.naputami.simple_shop_api.dto.response.OptionItemDTO;
+import com.naputami.simple_shop_api.dto.response.OptionItemListDTO;
 import com.naputami.simple_shop_api.dto.response.StandardResponseDTO;
 import com.naputami.simple_shop_api.repository.CustomerRepository;
 import com.naputami.simple_shop_api.repository.ItemRespository;
@@ -74,13 +75,14 @@ public class OptionService {
 
         try {
             List<Item> items = itemRespository.findAvailableItems();
-            List<OptionItemDTO> data = new ArrayList<>();
+            List<OptionItemListDTO> data = new ArrayList<>();
 
             for(Item item: items){
-                OptionItemDTO itemDTO = OptionItemDTO.builder()
-                                                     .id(item.getId())
-                                                     .name(item.getName())
-                                                     .build();
+               OptionItemListDTO itemDTO = OptionItemListDTO.builder()
+                                                            .id(item.getId())
+                                                            .name(item.getName())
+                                                            .price(item.getPrice())
+                                                            .build();
                 data.add(itemDTO);
             }
 
